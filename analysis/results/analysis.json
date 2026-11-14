@@ -1,514 +1,975 @@
 {
  "meta": {
+  "version": "v2",
   "generated_by": "analysis/score.py",
   "as_of_quarter": "2026Q2",
-  "base_data": "data/processed/panel.csv, trdar.csv",
-  "population_rule": "관광특구 제외, 최근 4분기(2025Q3~2026Q2) 커피+제과 매출 연속 관측, 4분기 합 >= 2억원, 4분기 평균 커피+제과 점포 >= 5개, 매출 YoY 계산 가능(업종 구성 일치)",
-  "population_n": {
-   "2023Q2(백테스트)": 775,
-   "2026Q2(최신)": 783
-  },
-  "normalization": "각 지표를 시점별 모집단 내 백분위(0~1)로 변환(서울 거시 추세 상대화), 감점 지표는 1-백분위, 결측=0.5. 축 점수=축 내 지표 평균, 총점=가중합x100"
+  "population_rule": "관광특구 제외, 최근 4분기 커피+제과 매출 연속 관측, 4분기 합 >= 2억원, 점포 >= 5개",
+  "investable_rule": "출점 적격: 최근 4분기 커피+제과 매출 >= 50억원 (PE 플래그십 매장의 시장 규모 요건, 사업 판단 기준)",
+  "population_n": 783,
+  "investable_n": 158,
+  "normalization": "지표별 시점 내 백분위(감점 지표는 1-백분위, 결측 0.5) → 19개 지표 동일가중 평균 x100"
  },
  "metrics": {
   "axes": {
    "A": {
-    "name": "수요 모멘텀(매출 흐름)",
-    "weight": 0.25
+    "name": "매출 흐름",
+    "n_indicators": 6,
+    "effective_weight": 0.316
    },
    "B": {
-    "name": "고객 유입(인구)",
-    "weight": 0.25
+    "name": "고객 구성",
+    "n_indicators": 7,
+    "effective_weight": 0.368
    },
    "C": {
-    "name": "공급 여력(점포·과열 감점)",
-    "weight": 0.25
+    "name": "유동·접근성",
+    "n_indicators": 3,
+    "effective_weight": 0.158
    },
    "D": {
-    "name": "상권 체력(구조적 수준)",
-    "weight": 0.25
+    "name": "공급 동학",
+    "n_indicators": 3,
+    "effective_weight": 0.158
    }
   },
   "indicators": [
    {
     "id": "A1_sales_yoy",
     "axis": "A",
+    "axis_name": "매출 흐름",
     "direction": "+",
     "definition": "커피+제과 매출 성장률(4분기 합 YoY, 업종구성 일치)",
-    "unit": "log 비율/년",
+    "unit": "log 배수/년",
     "source": "OA-15572",
-    "window_2026Q2": "2024Q3~2025Q2 대비 2025Q3~2026Q2",
-    "backtest_ic_3y": 0.014,
-    "backtest_ic_2y": 0.105
+    "train_ic": {
+     "mean": 0.098,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.151,
+     "2y": 0.072,
+     "3y": 0.037
+    }
    },
    {
-    "id": "A2_2030_share_chg",
+    "id": "A2_sales_yoy_2q",
     "axis": "A",
+    "axis_name": "매출 흐름",
     "direction": "+",
-    "definition": "20·30대 매출 비중 변화(4분기 합 기준 YoY)",
-    "unit": "%p",
+    "definition": "최근 2분기 매출 YoY(가속 신호)",
+    "unit": "log 배수",
     "source": "OA-15572",
-    "window_2026Q2": "2024Q3~2025Q2 대비 2025Q3~2026Q2",
-    "backtest_ic_3y": 0.036,
-    "backtest_ic_2y": 0.02
+    "train_ic": {
+     "mean": 0.177,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.25,
+     "2y": 0.153,
+     "3y": 0.075
+    }
    },
    {
-    "id": "B1_flpop_yoy",
+    "id": "A3_persistence",
+    "axis": "A",
+    "axis_name": "매출 흐름",
+    "direction": "+",
+    "definition": "최근 6분기 중 전년동기 대비 매출 증가 분기 비율(성장 지속성)",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.073,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.096,
+     "2y": 0.053,
+     "3y": 0.037
+    }
+   },
+   {
+    "id": "A4_txn_yoy",
+    "axis": "A",
+    "axis_name": "매출 흐름",
+    "direction": "+",
+    "definition": "결제건수 성장률(4분기 합 YoY) — 물량 기반 성장",
+    "unit": "log 배수/년",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.104,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.157,
+     "2y": 0.098,
+     "3y": 0.046
+    }
+   },
+   {
+    "id": "A5_ticket_yoy",
+    "axis": "A",
+    "axis_name": "매출 흐름",
+    "direction": "-(감점)",
+    "definition": "건당 결제액 성장률(가격 기반 성장, 지속성 낮음=감점)",
+    "unit": "log 배수/년",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": -0.047,
+     "positive_share": 0.0
+    },
+    "test_ic": {
+     "1y": -0.019,
+     "2y": -0.043,
+     "3y": -0.062
+    }
+   },
+   {
+    "id": "A6_volatility",
+    "axis": "A",
+    "axis_name": "매출 흐름",
+    "direction": "-(감점)",
+    "definition": "분기 매출 변동성(최근 8분기 QoQ log 표준편차, 높을수록 감점)",
+    "unit": "log",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.053,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": -0.032,
+     "2y": -0.028,
+     "3y": -0.002
+    }
+   },
+   {
+    "id": "B1_2030_chg",
     "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "+",
+    "definition": "20·30대 매출 비중 변화(4분기 합, YoY)",
+    "unit": "비율 차",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.069,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.041,
+     "2y": 0.038,
+     "3y": 0.035
+    }
+   },
+   {
+    "id": "B2_2030_level",
+    "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "-(감점)",
+    "definition": "20·30대 매출 비중 수준(트렌드 소비 의존=감점)",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": -0.038,
+     "positive_share": 0.0
+    },
+    "test_ic": {
+     "1y": -0.005,
+     "2y": -0.02,
+     "3y": -0.039
+    }
+   },
+   {
+    "id": "B3_50p_share",
+    "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "+",
+    "definition": "50대 이상 매출 비중",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.055,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.003,
+     "2y": 0.016,
+     "3y": 0.051
+    }
+   },
+   {
+    "id": "B4_corp_share",
+    "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "+",
+    "definition": "법인 등 미식별 매출 비중(오피스 수요 대리지표)",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.047,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.006,
+     "2y": 0.032,
+     "3y": 0.052
+    }
+   },
+   {
+    "id": "B5_morning_share",
+    "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "+",
+    "definition": "06~11시 매출 비중(출근·일상 수요)",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": 0.064,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.018,
+     "2y": 0.033,
+     "3y": 0.033
+    }
+   },
+   {
+    "id": "B6_evening_share",
+    "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "-(감점)",
+    "definition": "17~21시 매출 비중(여가 수요=감점)",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": -0.048,
+     "positive_share": 0.0
+    },
+    "test_ic": {
+     "1y": -0.024,
+     "2y": -0.044,
+     "3y": -0.043
+    }
+   },
+   {
+    "id": "B7_weekend_share",
+    "axis": "B",
+    "axis_name": "고객 구성",
+    "direction": "-(감점)",
+    "definition": "주말 매출 비중(여가 수요=감점)",
+    "unit": "비율",
+    "source": "OA-15572",
+    "train_ic": {
+     "mean": -0.032,
+     "positive_share": 0.2
+    },
+    "test_ic": {
+     "1y": -0.023,
+     "2y": -0.049,
+     "3y": -0.058
+    }
+   },
+   {
+    "id": "C1_flpop_yoy",
+    "axis": "C",
+    "axis_name": "유동·접근성",
     "direction": "+",
     "definition": "길단위 유동인구 성장률(4분기 평균 YoY)",
-    "unit": "log 비율/년(상대지수)",
+    "unit": "log 배수/년",
     "source": "OA-15568",
-    "window_2026Q2": "2024Q3~2025Q2 대비 2025Q3~2026Q2",
-    "backtest_ic_3y": -0.015,
-    "backtest_ic_2y": 0.069
+    "train_ic": {
+     "mean": 0.045,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.032,
+     "2y": 0.024,
+     "3y": 0.0
+    }
    },
    {
-    "id": "B2_flpop_2030",
-    "axis": "B",
+    "id": "C2_flpop_level",
+    "axis": "C",
+    "axis_name": "유동·접근성",
     "direction": "+",
-    "definition": "유동인구 20·30대 비중(4분기 평균)",
-    "unit": "비율",
+    "definition": "길단위 유동인구 수준(4분기 평균)",
+    "unit": "log 상대지수",
     "source": "OA-15568",
-    "window_2026Q2": "2025Q3~2026Q2",
-    "backtest_ic_3y": 0.015,
-    "backtest_ic_2y": 0.031
+    "train_ic": {
+     "mean": 0.031,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": -0.001,
+     "2y": -0.013,
+     "3y": -0.022
+    }
    },
    {
-    "id": "B3_repop_chg",
-    "axis": "B",
-    "direction": "+",
-    "definition": "상주인구 증감률(갱신 빈티지 간)",
-    "unit": "log 비율",
-    "source": "OA-15584",
-    "window_2026Q2": "2024Q3~2025Q2 대비 2025Q3~2026Q2",
-    "backtest_ic_3y": -0.025,
-    "backtest_ic_2y": 0.054
-   },
-   {
-    "id": "C1_store_yoy",
+    "id": "C3_subway",
     "axis": "C",
-    "direction": "-(감점)",
-    "definition": "커피+제과 점포수 증가율(4분기 평균 YoY, 경쟁 유입=감점)",
-    "unit": "log 비율/년",
-    "source": "OA-15577",
-    "window_2026Q2": "2024Q3~2025Q2 대비 2025Q3~2026Q2",
-    "backtest_ic_3y": -0.035,
-    "backtest_ic_2y": 0.024
-   },
-   {
-    "id": "C2_close_rt",
-    "axis": "C",
-    "direction": "-(감점)",
-    "definition": "커피+제과 연간 폐업률",
-    "unit": "%/년",
-    "source": "OA-15577",
-    "window_2026Q2": "2025Q3~2026Q2",
-    "backtest_ic_3y": -0.018,
-    "backtest_ic_2y": -0.038
-   },
-   {
-    "id": "D1_scale",
-    "axis": "D",
+    "axis_name": "유동·접근성",
     "direction": "+",
-    "definition": "커피+제과 연매출 규모",
-    "unit": "log 원/4분기",
-    "source": "OA-15572",
-    "window_2026Q2": "2025Q3~2026Q2",
-    "backtest_ic_3y": 0.021,
-    "backtest_ic_2y": 0.045
-   },
-   {
-    "id": "D2_facility",
-    "axis": "D",
-    "direction": "+",
-    "definition": "집객시설 수",
-    "unit": "log(1+개소)",
+    "definition": "상권 내 지하철역 수",
+    "unit": "개소",
     "source": "OA-15580",
-    "window_2026Q2": "2025Q3~2026Q2",
-    "backtest_ic_3y": 0.055,
-    "backtest_ic_2y": 0.08
+    "train_ic": {
+     "mean": 0.056,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.067,
+     "2y": 0.073,
+     "3y": 0.076
+    }
    },
    {
-    "id": "D3_opr_gap",
+    "id": "D1_store_yoy",
     "axis": "D",
+    "axis_name": "공급 동학",
     "direction": "+",
-    "definition": "운영 사업체 평균 영업개월 - 서울 평균(전 업종)",
-    "unit": "개월",
-    "source": "OA-15576",
-    "window_2026Q2": "2025Q3~2026Q2",
-    "backtest_ic_3y": 0.023,
-    "backtest_ic_2y": 0.052
+    "definition": "커피+제과 점포 순증률(4분기 평균 YoY) — 사업자 진입=수요 신호",
+    "unit": "log 배수/년",
+    "source": "OA-15577",
+    "train_ic": {
+     "mean": 0.062,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.046,
+     "2y": -0.012,
+     "3y": -0.003
+    }
+   },
+   {
+    "id": "D2_open_rate",
+    "axis": "D",
+    "axis_name": "공급 동학",
+    "direction": "+",
+    "definition": "연간 개업률(4분기 개업/전년 평균 점포)",
+    "unit": "비율/년",
+    "source": "OA-15577",
+    "train_ic": {
+     "mean": 0.119,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.111,
+     "2y": 0.05,
+     "3y": 0.014
+    }
+   },
+   {
+    "id": "D3_close_rate",
+    "axis": "D",
+    "axis_name": "공급 동학",
+    "direction": "-(감점)",
+    "definition": "연간 폐업률(4분기 폐업/전년 평균 점포, 높을수록 감점)",
+    "unit": "비율/년",
+    "source": "OA-15577",
+    "train_ic": {
+     "mean": 0.039,
+     "positive_share": 1.0
+    },
+    "test_ic": {
+     "1y": 0.022,
+     "2y": -0.001,
+     "3y": -0.013
+    }
    }
   ],
   "mece_rules": [
-   "A=매출 흐름만, B=인구만, C=점포 수·폐업만, D=수준·정적 구조값만 사용(같은 원천 변수를 두 축에 넣지 않음)",
-   "성장률은 모두 4분기 합(연환산) YoY로 계절성 제거",
-   "상주인구는 실제 갱신 빈티지(2022Q4·2023Q4) 간 변화만 사용, 집객시설은 정적 수준으로만 사용",
-   "프랜차이즈 비중은 2025Q4 재분류 단절 때문에 점수에서 제외(프로파일에만 사용)"
+   "A=매출 금액·건수의 시간 흐름, B=매출의 고객 구성비, C=사람 흐름·교통 인프라, D=점포 진입·퇴출 — 축마다 원천 변수가 겹치지 않음",
+   "성장률은 4분기 합(연환산) YoY로 계절성 제거, 업종 구성(커피/제과)이 같은 상권끼리만 비교",
+   "선형결합 지표(수요-공급 격차)와 기간 정의가 시점마다 달라지는 지표(2021 대비 회복률) 제외",
+   "규모 지표는 출점 적격 필터와 중복되므로 점수에서 제외"
   ],
-  "dropped": {
-   "C3_coffee_sales_per_store": {
-    "reason": "가설(+)과 반대로 두 백테스트 창 모두 음(-)의 상관(평균회귀). 부호를 사후에 뒤집지 않고 점수에서 제외, 프로파일 지표로만 사용",
-    "ic_3y": -0.053,
-    "ic_2y": -0.028
-   }
+  "selection_protocol": "후보 33개 → 학습 기준시점(2022Q4·2023Q1·2023Q2, 1·2년 타깃; 타깃 종료 ≤ 2024Q2)에서 |평균 IC|≥0.03 & 부호 일관 ≥80%인 지표만 채택, 부호도 학습 구간에서 확정 → 이후 기준시점에서 표본 밖 검증",
+  "dropped_candidates": {
+   "점포당 매출 수준": "학습 구간 IC가 음(-)·불안정(평균회귀). 수준 지표는 프로파일로만 사용",
+   "자치구 내 타 상권 성장(공간 파급)": "학습 구간 IC ±0.01, 부호 비일관",
+   "매출 규모(log)·집객시설 총수": "IC는 양(+)이나 출점 적격 필터(연 50억)와 중복 → 이중계상 방지로 제외",
+   "수요-공급 격차(A1-D1)": "A1·D1의 선형결합이라 MECE 위반",
+   "2021년 대비 회복률": "기준시점마다 기간 길이가 달라 정의가 비정상(non-stationary)",
+   "여성 비중·프랜차이즈 비중·영업개월 격차·유동 2030 비중": "학습 구간 |IC|<0.03 또는 부호 비일관"
   },
-  "weight_rationale": "사전 정의 후보 5개를 두 창(3년·2년) 스피어만 평균으로 비교. 최고 0.087와 0.01 이내 후보 중 가장 단순한(균등에 가까운) 'W2_균등(25x4)' 선택. 후보 간 차이가 0.01 미만이라 데이터에 맞춘 미세 가중은 과적합으로 판단.",
+  "weighting": "지표 동일가중(축 가중치 = 축 내 지표 수 비율). 데이터에 맞춘 미세 가중은 과적합 위험이 커서 사용하지 않음",
   "overheat_filter": {
-   "rule": "점포밀도(4분기 평균 점포/㎢) 상위 10% AND 연간 폐업률 상위 25% → 제외; 상권변화지표 HL(상권축소) → 제외",
+   "rule": "점포밀도 상위 10% AND 연간 폐업률 상위 25% → 제외, 상권변화지표 HL(상권축소) → 제외",
    "density_cut_stores_per_km2": 409.1,
-   "close_rate_cut_pct_per_year": 19.5,
-   "n_overheat": 15,
-   "n_excluded_total": 159,
-   "period": "2025Q3~2026Q2"
+   "close_rate_cut": 0.1951
   }
  },
  "backtest": {
-  "design": "t0 시점까지 데이터로만 점수 산출 → 이후 실제 커피+제과 매출(4분기 합, 업종 구성 일치) 성장률과 비교",
-  "main_window": "t0=2023Q2, 결과 = 2022Q3~2023Q2 대비 2025Q3~2026Q2 (3년), 단위: 연평균 성장률(CAGR)",
-  "robust_window": "t0=2024Q2, 결과 = 2023Q3~2024Q2 대비 2025Q3~2026Q2 (2년). 2023Q2 특징값이 코로나 회복기(2022~23)를 포함해 보조 창으로 강건성 확인",
-  "candidates": {
-   "W1_초안(35/25/25/15)": {
-    "main_3y_2023Q2_2026Q2": {
-     "spearman": 0.057,
-     "top20_hit_rate": 0.221,
-     "top20_in_bottom20": 0.175,
-     "top20_median_cagr": -0.0011,
-     "top10pct_median_cagr": 0.0059,
-     "all_median_cagr": -0.0123,
-     "n": 765,
-     "spearman_half_odd_even": [
-      0.116,
-      -0.002
-     ]
-    },
-    "robust_2y_2024Q2_2026Q2": {
-     "spearman": 0.117,
-     "top20_hit_rate": 0.232,
-     "top20_in_bottom20": 0.129,
-     "top20_median_cagr": 0.0052,
-     "top10pct_median_cagr": 0.0102,
-     "all_median_cagr": -0.0175,
-     "n": 774,
-     "spearman_half_odd_even": [
-      0.14,
-      0.093
-     ]
-    }
+  "design": "롤링 기준시점: 기준시점 t0까지의 데이터로만 점수 산출 → t0 이후 1·2·3년 실제 커피+제과 매출(4분기 합, 업종구성 일치) 성장과 비교",
+  "test_origins": {
+   "1y": [
+    "2023Q3",
+    "2023Q4",
+    "2024Q1",
+    "2024Q2",
+    "2024Q3",
+    "2024Q4",
+    "2025Q1",
+    "2025Q2"
+   ],
+   "2y": [
+    "2023Q2",
+    "2023Q3",
+    "2023Q4",
+    "2024Q1",
+    "2024Q2"
+   ],
+   "3y": [
+    "2022Q4",
+    "2023Q1",
+    "2023Q2"
+   ]
+  },
+  "out_of_sample_note": "1년 예측의 시험 타깃(2024Q3~)은 학습 타깃(~2024Q2) 이후로 완전 분리. 2·3년 예측은 타깃 기간 일부가 학습 타깃과 겹칠 수 있음",
+  "v2_all_population": {
+   "1y": {
+    "origins": 8,
+    "n": 781.125,
+    "spearman": 0.1614,
+    "spearman_min": 0.1058,
+    "top20_hit": 0.238,
+    "top20_cagr": -0.0041,
+    "bottom20_cagr": -0.0611,
+    "all_cagr": -0.028,
+    "spread_pp": 5.6991
    },
-   "W2_균등(25x4)": {
-    "main_3y_2023Q2_2026Q2": {
-     "spearman": 0.059,
-     "top20_hit_rate": 0.188,
-     "top20_in_bottom20": 0.162,
-     "top20_median_cagr": -0.0014,
-     "top10pct_median_cagr": 0.0125,
-     "all_median_cagr": -0.0123,
-     "n": 765,
-     "spearman_half_odd_even": [
-      0.113,
-      0.0
-     ]
-    },
-    "robust_2y_2024Q2_2026Q2": {
-     "spearman": 0.116,
-     "top20_hit_rate": 0.232,
-     "top20_in_bottom20": 0.11,
-     "top20_median_cagr": -0.0074,
-     "top10pct_median_cagr": 0.0092,
-     "all_median_cagr": -0.0175,
-     "n": 774,
-     "spearman_half_odd_even": [
-      0.114,
-      0.116
-     ]
-    }
+   "2y": {
+    "origins": 5,
+    "n": 772.6,
+    "spearman": 0.1267,
+    "spearman_min": 0.0966,
+    "top20_hit": 0.2448,
+    "top20_cagr": -0.0023,
+    "bottom20_cagr": -0.0445,
+    "all_cagr": -0.0233,
+    "spread_pp": 4.2194
    },
-   "W3_수요중심(50/20/20/10)": {
-    "main_3y_2023Q2_2026Q2": {
-     "spearman": 0.052,
-     "top20_hit_rate": 0.247,
-     "top20_in_bottom20": 0.201,
-     "top20_median_cagr": -0.0061,
-     "top10pct_median_cagr": 0.0029,
-     "all_median_cagr": -0.0123,
-     "n": 765,
-     "spearman_half_odd_even": [
-      0.11,
-      -0.007
-     ]
-    },
-    "robust_2y_2024Q2_2026Q2": {
-     "spearman": 0.111,
-     "top20_hit_rate": 0.245,
-     "top20_in_bottom20": 0.155,
-     "top20_median_cagr": 0.0052,
-     "top10pct_median_cagr": 0.0134,
-     "all_median_cagr": -0.0175,
-     "n": 774,
-     "spearman_half_odd_even": [
-      0.153,
-      0.064
-     ]
-    }
-   },
-   "W4_공급·체력중심(20/20/35/25)": {
-    "main_3y_2023Q2_2026Q2": {
-     "spearman": 0.06,
-     "top20_hit_rate": 0.195,
-     "top20_in_bottom20": 0.136,
-     "top20_median_cagr": -0.0011,
-     "top10pct_median_cagr": 0.0102,
-     "all_median_cagr": -0.0123,
-     "n": 765,
-     "spearman_half_odd_even": [
-      0.112,
-      0.001
-     ]
-    },
-    "robust_2y_2024Q2_2026Q2": {
-     "spearman": 0.102,
-     "top20_hit_rate": 0.232,
-     "top20_in_bottom20": 0.11,
-     "top20_median_cagr": 0.0028,
-     "top10pct_median_cagr": 0.0008,
-     "all_median_cagr": -0.0175,
-     "n": 774,
-     "spearman_half_odd_even": [
-      0.085,
-      0.117
-     ]
-    }
-   },
-   "W5_모멘텀제외(0/30/40/30)": {
-    "main_3y_2023Q2_2026Q2": {
-     "spearman": 0.046,
-     "top20_hit_rate": 0.169,
-     "top20_in_bottom20": 0.169,
-     "top20_median_cagr": -0.0008,
-     "top10pct_median_cagr": 0.0024,
-     "all_median_cagr": -0.0123,
-     "n": 765,
-     "spearman_half_odd_even": [
-      0.084,
-      0.007
-     ]
-    },
-    "robust_2y_2024Q2_2026Q2": {
-     "spearman": 0.084,
-     "top20_hit_rate": 0.2,
-     "top20_in_bottom20": 0.11,
-     "top20_median_cagr": -0.0085,
-     "top10pct_median_cagr": -0.011,
-     "all_median_cagr": -0.0175,
-     "n": 774,
-     "spearman_half_odd_even": [
-      0.057,
-      0.108
-     ]
-    }
+   "3y": {
+    "origins": 3,
+    "n": 761.6667,
+    "spearman": 0.1004,
+    "spearman_min": 0.0807,
+    "top20_hit": 0.2484,
+    "top20_cagr": 0.0006,
+    "bottom20_cagr": -0.0226,
+    "all_cagr": -0.0129,
+    "spread_pp": 2.326
    }
   },
-  "avg_spearman": {
-   "W1_초안(35/25/25/15)": 0.087,
-   "W2_균등(25x4)": 0.087,
-   "W3_수요중심(50/20/20/10)": 0.082,
-   "W4_공급·체력중심(20/20/35/25)": 0.081,
-   "W5_모멘텀제외(0/30/40/30)": 0.065
+  "v2_investable": {
+   "1y": {
+    "origins": 8,
+    "n": 156.875,
+    "spearman": 0.2369,
+    "spearman_min": 0.1539,
+    "top20_hit": 0.2856,
+    "top20_cagr": 0.0119,
+    "bottom20_cagr": -0.0636,
+    "all_cagr": -0.0184,
+    "spread_pp": 7.5413
+   },
+   "2y": {
+    "origins": 5,
+    "n": 157.4,
+    "spearman": 0.2322,
+    "spearman_min": 0.1831,
+    "top20_hit": 0.3018,
+    "top20_cagr": 0.01,
+    "bottom20_cagr": -0.0493,
+    "all_cagr": -0.0178,
+    "spread_pp": 5.9235
+   },
+   "3y": {
+    "origins": 3,
+    "n": 157.6667,
+    "spearman": 0.2323,
+    "spearman_min": 0.2163,
+    "top20_hit": 0.2812,
+    "top20_cagr": 0.0085,
+    "bottom20_cagr": -0.0233,
+    "all_cagr": -0.0097,
+    "spread_pp": 3.1844
+   }
   },
-  "selected": "W2_균등(25x4)",
-  "axis_ic_3y": {
-   "A": 0.034,
-   "B": 0.003,
-   "C": 0.042,
-   "D": 0.052
+  "v1_all_population": {
+   "1y": {
+    "origins": 8,
+    "n": 781.125,
+    "spearman": 0.0857,
+    "spearman_min": 0.0096,
+    "top20_hit": 0.2118,
+    "top20_cagr": -0.0122,
+    "bottom20_cagr": -0.0474,
+    "all_cagr": -0.028,
+    "spread_pp": 3.5259
+   },
+   "2y": {
+    "origins": 5,
+    "n": 772.6,
+    "spearman": 0.0745,
+    "spearman_min": 0.0334,
+    "top20_hit": 0.2358,
+    "top20_cagr": -0.0082,
+    "bottom20_cagr": -0.0294,
+    "all_cagr": -0.0233,
+    "spread_pp": 2.1224
+   },
+   "3y": {
+    "origins": 3,
+    "n": 761.6667,
+    "spearman": 0.059,
+    "spearman_min": 0.056,
+    "top20_hit": 0.2179,
+    "top20_cagr": 0.0056,
+    "bottom20_cagr": -0.0209,
+    "all_cagr": -0.0129,
+    "spread_pp": 2.6591
+   }
   },
-  "interpretation": "상관은 약하지만 두 창 모두 양(+)이고 상위 20%의 하위 20% 추락 비율이 무작위(20%)보다 낮음. 3년 상권 매출은 본질적으로 예측 난도가 높아 점수는 '하방 위험이 낮은 후보 압축' 도구로 쓰고 최종 판단은 프로파일로 보강."
+  "v1_investable": {
+   "1y": {
+    "origins": 8,
+    "n": 156.875,
+    "spearman": 0.1552,
+    "spearman_min": -0.0186,
+    "top20_hit": 0.2545,
+    "top20_cagr": -0.0083,
+    "bottom20_cagr": -0.041,
+    "all_cagr": -0.0184,
+    "spread_pp": 3.2697
+   },
+   "2y": {
+    "origins": 5,
+    "n": 157.4,
+    "spearman": 0.1667,
+    "spearman_min": 0.1073,
+    "top20_hit": 0.2643,
+    "top20_cagr": 0.0047,
+    "bottom20_cagr": -0.0267,
+    "all_cagr": -0.0178,
+    "spread_pp": 3.1323
+   },
+   "3y": {
+    "origins": 3,
+    "n": 157.6667,
+    "spearman": 0.1317,
+    "spearman_min": 0.1127,
+    "top20_hit": 0.25,
+    "top20_cagr": 0.0112,
+    "bottom20_cagr": -0.0143,
+    "all_cagr": -0.0097,
+    "spread_pp": 2.5486
+   }
+  },
+  "headline": {
+   "spearman_3y_investable": {
+    "v1": 0.1317,
+    "v2": 0.2323
+   },
+   "spearman_3y_all": {
+    "v1": 0.059,
+    "v2": 0.1004
+   },
+   "v1_original_single_window": 0.059,
+   "top20_vs_bottom20_cagr_spread_pp_3y_investable": 3.18
+  },
+  "interpretation": "상권 매출 3년 성장은 본질적으로 잡음이 크다. 점수는 '확실한 1등 예측'이 아니라 성장 확률이 높은 후보를 압축하는 도구이며, 출점 적격 상권에서 상위 20%가 하위 20%보다 연평균 성장률이 꾸준히 높았다.",
+  "by_origin": {
+   "v2_investable": [
+    {
+     "horizon_q": 4,
+     "t0": "2023Q3",
+     "n": 153,
+     "spearman": 0.1539,
+     "top20_hit": 0.2258,
+     "top20_cagr_med": -0.0043,
+     "bottom20_cagr_med": -0.0271,
+     "all_cagr_med": -0.0176
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2023Q4",
+     "n": 159,
+     "spearman": 0.2049,
+     "top20_hit": 0.3125,
+     "top20_cagr_med": 0.0137,
+     "bottom20_cagr_med": -0.0451,
+     "all_cagr_med": -0.023
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2024Q1",
+     "n": 159,
+     "spearman": 0.2178,
+     "top20_hit": 0.25,
+     "top20_cagr_med": 0.0224,
+     "bottom20_cagr_med": -0.0754,
+     "all_cagr_med": -0.0279
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2024Q2",
+     "n": 157,
+     "spearman": 0.2291,
+     "top20_hit": 0.2812,
+     "top20_cagr_med": 0.0015,
+     "bottom20_cagr_med": -0.0908,
+     "all_cagr_med": -0.0362
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2024Q3",
+     "n": 160,
+     "spearman": 0.3294,
+     "top20_hit": 0.3636,
+     "top20_cagr_med": 0.0051,
+     "bottom20_cagr_med": -0.0809,
+     "all_cagr_med": -0.0242
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2024Q4",
+     "n": 159,
+     "spearman": 0.3239,
+     "top20_hit": 0.3125,
+     "top20_cagr_med": 0.0215,
+     "bottom20_cagr_med": -0.0692,
+     "all_cagr_med": -0.0296
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2025Q1",
+     "n": 155,
+     "spearman": 0.2478,
+     "top20_hit": 0.2812,
+     "top20_cagr_med": 0.0094,
+     "bottom20_cagr_med": -0.0476,
+     "all_cagr_med": -0.0024
+    },
+    {
+     "horizon_q": 4,
+     "t0": "2025Q2",
+     "n": 153,
+     "spearman": 0.1886,
+     "top20_hit": 0.2581,
+     "top20_cagr_med": 0.0255,
+     "bottom20_cagr_med": -0.0724,
+     "all_cagr_med": 0.0141
+    },
+    {
+     "horizon_q": 8,
+     "t0": "2023Q2",
+     "n": 159,
+     "spearman": 0.1831,
+     "top20_hit": 0.2188,
+     "top20_cagr_med": -0.0038,
+     "bottom20_cagr_med": -0.0412,
+     "all_cagr_med": -0.0259
+    },
+    {
+     "horizon_q": 8,
+     "t0": "2023Q3",
+     "n": 153,
+     "spearman": 0.2017,
+     "top20_hit": 0.2903,
+     "top20_cagr_med": 0.0036,
+     "bottom20_cagr_med": -0.0427,
+     "all_cagr_med": -0.0173
+    },
+    {
+     "horizon_q": 8,
+     "t0": "2023Q4",
+     "n": 159,
+     "spearman": 0.2594,
+     "top20_hit": 0.3438,
+     "top20_cagr_med": 0.0173,
+     "bottom20_cagr_med": -0.058,
+     "all_cagr_med": -0.0191
+    },
+    {
+     "horizon_q": 8,
+     "t0": "2024Q1",
+     "n": 159,
+     "spearman": 0.2968,
+     "top20_hit": 0.375,
+     "top20_cagr_med": 0.0256,
+     "bottom20_cagr_med": -0.0589,
+     "all_cagr_med": -0.0156
+    },
+    {
+     "horizon_q": 8,
+     "t0": "2024Q2",
+     "n": 157,
+     "spearman": 0.2201,
+     "top20_hit": 0.2812,
+     "top20_cagr_med": 0.0073,
+     "bottom20_cagr_med": -0.0455,
+     "all_cagr_med": -0.011
+    },
+    {
+     "horizon_q": 12,
+     "t0": "2022Q4",
+     "n": 156,
+     "spearman": 0.2507,
+     "top20_hit": 0.2812,
+     "top20_cagr_med": 0.0142,
+     "bottom20_cagr_med": -0.0287,
+     "all_cagr_med": -0.0057
+    },
+    {
+     "horizon_q": 12,
+     "t0": "2023Q1",
+     "n": 158,
+     "spearman": 0.2163,
+     "top20_hit": 0.3125,
+     "top20_cagr_med": 0.0055,
+     "bottom20_cagr_med": -0.0212,
+     "all_cagr_med": -0.0115
+    },
+    {
+     "horizon_q": 12,
+     "t0": "2023Q2",
+     "n": 159,
+     "spearman": 0.2299,
+     "top20_hit": 0.25,
+     "top20_cagr_med": 0.0059,
+     "bottom20_cagr_med": -0.02,
+     "all_cagr_med": -0.012
+    }
+   ]
+  }
  },
  "top10": [
   {
    "rank": 1,
-   "TRDAR_CD": "3120243",
-   "name": "천호역",
+   "TRDAR_CD": "3120175",
+   "name": "남부터미널역",
    "type": "발달상권",
-   "gu": "강동구",
-   "dong": "천호2동",
-   "lon": 127.124442,
-   "lat": 37.539523,
-   "score": 76.0,
+   "gu": "서초구",
+   "dong": "서초1동",
+   "lon": 127.018113,
+   "lat": 37.485113,
+   "score": 71.3,
    "axis": {
-    "A": 83.1,
-    "B": 84.0,
-    "C": 50.4,
-    "D": 86.3
+    "A": 75.5,
+    "B": 68.0,
+    "C": 79.2,
+    "D": 62.6
    },
-   "cb_sales_4q_won": 8444626251,
-   "sales_yoy": 0.1819,
-   "share_2030_chg_pp": 0.39,
-   "flpop_yoy": 0.1938,
-   "stores_4q_avg": 80.0,
-   "store_yoy": 0.0224,
-   "close_rt_pct": 8.9,
-   "coffee_sales_per_store_won_4q": 133655216,
-   "fac_subway": 2,
-   "fac_total": 130,
+   "cb_sales_4q_won": 13061303126,
+   "sales_yoy": 0.1442,
+   "sales_yoy_2q": 0.1857,
+   "txn_yoy": 0.0963,
+   "stores_4q_avg": 66.8,
+   "store_yoy": 0.0349,
+   "close_rate": 0.1085,
+   "morning_share": 0.2397,
+   "weekend_share": 0.1859,
+   "corp_share": 0.201,
+   "fac_subway": 1,
    "chg_ix": "HH",
    "overheat": false,
-   "rank_before_filter": 1
+   "investable": true,
+   "rank_all_population": 3
   },
   {
    "rank": 2,
-   "TRDAR_CD": "3120132",
-   "name": "독산동",
+   "TRDAR_CD": "3120023",
+   "name": "서울시청",
    "type": "발달상권",
-   "gu": "금천구",
-   "dong": "독산1동",
-   "lon": 126.893895,
-   "lat": 37.470741,
-   "score": 73.3,
+   "gu": "중구",
+   "dong": "명동",
+   "lon": 126.977916,
+   "lat": 37.568031,
+   "score": 69.3,
    "axis": {
-    "A": 68.3,
-    "B": 84.7,
-    "C": 53.8,
-    "D": 86.6
+    "A": 80.2,
+    "B": 72.3,
+    "C": 29.0,
+    "D": 80.8
    },
-   "cb_sales_4q_won": 4992982456,
-   "sales_yoy": 0.0241,
-   "share_2030_chg_pp": 0.49,
-   "flpop_yoy": 0.0527,
-   "stores_4q_avg": 40.0,
-   "store_yoy": -0.0419,
-   "close_rt_pct": 14.4,
-   "coffee_sales_per_store_won_4q": 125080341,
+   "cb_sales_4q_won": 14129932825,
+   "sales_yoy": 0.4051,
+   "sales_yoy_2q": 0.5865,
+   "txn_yoy": 0.4205,
+   "stores_4q_avg": 37.0,
+   "store_yoy": 0.0882,
+   "close_rate": 0.0882,
+   "morning_share": 0.1664,
+   "weekend_share": 0.1,
+   "corp_share": 0.3373,
    "fac_subway": 0,
-   "fac_total": 109,
    "chg_ix": "HH",
    "overheat": false,
-   "rank_before_filter": 3
+   "investable": true,
+   "rank_all_population": 7
   },
   {
    "rank": 3,
-   "TRDAR_CD": "3120065",
-   "name": "회기역",
-   "type": "발달상권",
-   "gu": "동대문구",
-   "dong": "휘경1동",
-   "lon": 127.05762,
-   "lat": 37.589418,
-   "score": 72.7,
+   "TRDAR_CD": "3130024",
+   "name": "남대문시장(자유상가)",
+   "type": "전통시장",
+   "gu": "중구",
+   "dong": "회현동",
+   "lon": 126.977613,
+   "lat": 37.55958,
+   "score": 69.1,
    "axis": {
-    "A": 63.1,
-    "B": 83.9,
-    "C": 84.8,
-    "D": 59.1
+    "A": 54.5,
+    "B": 76.4,
+    "C": 84.5,
+    "D": 65.8
    },
-   "cb_sales_4q_won": 3755924948,
-   "sales_yoy": 0.0808,
-   "share_2030_chg_pp": -1.93,
-   "flpop_yoy": 0.0077,
-   "stores_4q_avg": 25.0,
-   "store_yoy": -0.1071,
-   "close_rt_pct": 3.6,
-   "coffee_sales_per_store_won_4q": 95851425,
-   "fac_subway": 3,
-   "fac_total": 38,
-   "chg_ix": "LH",
+   "cb_sales_4q_won": 12134119995,
+   "sales_yoy": 0.0039,
+   "sales_yoy_2q": -0.0027,
+   "txn_yoy": 0.0861,
+   "stores_4q_avg": 46.2,
+   "store_yoy": 0.0632,
+   "close_rate": 0.092,
+   "morning_share": 0.1732,
+   "weekend_share": 0.1758,
+   "corp_share": 0.1266,
+   "fac_subway": 1,
+   "chg_ix": "HH",
    "overheat": false,
-   "rank_before_filter": 4
+   "investable": true,
+   "rank_all_population": 8
   },
   {
    "rank": 4,
-   "TRDAR_CD": "3110537",
-   "name": "충정로현대아파트",
-   "type": "골목상권",
-   "gu": "서대문구",
-   "dong": "충현동",
-   "lon": 126.963566,
-   "lat": 37.563226,
-   "score": 71.3,
+   "TRDAR_CD": "3120210",
+   "name": "선릉역",
+   "type": "발달상권",
+   "gu": "강남구",
+   "dong": "대치4동",
+   "lon": 127.049355,
+   "lat": 37.504611,
+   "score": 68.7,
    "axis": {
-    "A": 95.0,
-    "B": 80.2,
-    "C": 63.5,
-    "D": 46.6
+    "A": 75.7,
+    "B": 62.3,
+    "C": 83.8,
+    "D": 54.7
    },
-   "cb_sales_4q_won": 265003339,
-   "sales_yoy": 1.1118,
-   "share_2030_chg_pp": 2.49,
-   "flpop_yoy": 0.0733,
-   "stores_4q_avg": 15.8,
-   "store_yoy": -0.0597,
-   "close_rt_pct": 11.9,
-   "coffee_sales_per_store_won_4q": 18231512,
-   "fac_subway": 0,
-   "fac_total": 18,
-   "chg_ix": "HH",
+   "cb_sales_4q_won": 49372320214,
+   "sales_yoy": 0.2183,
+   "sales_yoy_2q": 0.029,
+   "txn_yoy": 0.2579,
+   "stores_4q_avg": 132.2,
+   "store_yoy": 0.0019,
+   "close_rate": 0.1591,
+   "morning_share": 0.1766,
+   "weekend_share": 0.1799,
+   "corp_share": 0.1779,
+   "fac_subway": 2,
+   "chg_ix": "LL",
    "overheat": false,
-   "rank_before_filter": 5
+   "investable": true,
+   "rank_all_population": 10
   },
   {
    "rank": 5,
-   "TRDAR_CD": "3120157",
-   "name": "신림역(신림)",
+   "TRDAR_CD": "3120149",
+   "name": "여의도역(여의도)",
    "type": "발달상권",
-   "gu": "관악구",
-   "dong": "신림동",
-   "lon": 126.930238,
-   "lat": 37.484724,
-   "score": 71.2,
+   "gu": "영등포구",
+   "dong": "여의동",
+   "lon": 126.926255,
+   "lat": 37.522681,
+   "score": 68.7,
    "axis": {
-    "A": 76.9,
-    "B": 81.4,
-    "C": 58.3,
-    "D": 67.9
+    "A": 71.1,
+    "B": 70.3,
+    "C": 77.0,
+    "D": 51.9
    },
-   "cb_sales_4q_won": 6574273893,
-   "sales_yoy": 0.0825,
-   "share_2030_chg_pp": 0.27,
-   "flpop_yoy": -0.0,
-   "stores_4q_avg": 60.0,
-   "store_yoy": -0.0164,
-   "close_rt_pct": 9.8,
-   "coffee_sales_per_store_won_4q": 134183518,
-   "fac_subway": 1,
-   "fac_total": 147,
+   "cb_sales_4q_won": 71839622649,
+   "sales_yoy": 0.0979,
+   "sales_yoy_2q": 0.1116,
+   "txn_yoy": 0.0493,
+   "stores_4q_avg": 256.5,
+   "store_yoy": -0.0106,
+   "close_rate": 0.1196,
+   "morning_share": 0.2436,
+   "weekend_share": 0.0955,
+   "corp_share": 0.3617,
+   "fac_subway": 2,
    "chg_ix": "LL",
    "overheat": false,
-   "rank_before_filter": 6
+   "investable": true,
+   "rank_all_population": 11
   },
   {
    "rank": 6,
-   "TRDAR_CD": "3120153",
-   "name": "노량진역(노량진)",
+   "TRDAR_CD": "3120215",
+   "name": "포스코사거리",
    "type": "발달상권",
-   "gu": "동작구",
-   "dong": "노량진1동",
-   "lon": 126.940266,
-   "lat": 37.514003,
-   "score": 71.1,
+   "gu": "강남구",
+   "dong": "삼성2동",
+   "lon": 127.056267,
+   "lat": 37.506824,
+   "score": 68.7,
    "axis": {
-    "A": 50.2,
-    "B": 88.2,
-    "C": 53.6,
-    "D": 92.3
+    "A": 71.1,
+    "B": 66.0,
+    "C": 66.9,
+    "D": 71.8
    },
-   "cb_sales_4q_won": 9657005000,
-   "sales_yoy": -0.0309,
-   "share_2030_chg_pp": -1.38,
-   "flpop_yoy": 0.0229,
-   "stores_4q_avg": 71.8,
-   "store_yoy": -0.1031,
-   "close_rt_pct": 20.0,
-   "coffee_sales_per_store_won_4q": 110594895,
-   "fac_subway": 2,
-   "fac_total": 71,
-   "chg_ix": "HH",
+   "cb_sales_4q_won": 30182203925,
+   "sales_yoy": 0.0349,
+   "sales_yoy_2q": 0.0145,
+   "txn_yoy": 0.0881,
+   "stores_4q_avg": 108.8,
+   "store_yoy": 0.0382,
+   "close_rate": 0.0955,
+   "morning_share": 0.2446,
+   "weekend_share": 0.1489,
+   "corp_share": 0.3407,
+   "fac_subway": 0,
+   "chg_ix": "LL",
    "overheat": false,
-   "rank_before_filter": 7
+   "investable": true,
+   "rank_all_population": 12
   },
   {
    "rank": 7,
+   "TRDAR_CD": "3120169",
+   "name": "서초역",
+   "type": "발달상권",
+   "gu": "서초구",
+   "dong": "서초3동",
+   "lon": 127.008594,
+   "lat": 37.491466,
+   "score": 67.3,
+   "axis": {
+    "A": 65.9,
+    "B": 71.5,
+    "C": 67.9,
+    "D": 59.4
+   },
+   "cb_sales_4q_won": 14446754462,
+   "sales_yoy": 0.0409,
+   "sales_yoy_2q": 0.0514,
+   "txn_yoy": 0.028,
+   "stores_4q_avg": 80.0,
+   "store_yoy": 0.0191,
+   "close_rate": 0.1019,
+   "morning_share": 0.1839,
+   "weekend_share": 0.2676,
+   "corp_share": 0.2182,
+   "fac_subway": 1,
+   "chg_ix": "HH",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 19
+  },
+  {
+   "rank": 8,
    "TRDAR_CD": "3120030",
    "name": "중부경찰서(영화인의거리)",
    "type": "발달상권",
@@ -516,548 +977,31 @@
    "dong": "명동",
    "lon": 126.990311,
    "lat": 37.562789,
-   "score": 70.7,
+   "score": 66.1,
    "axis": {
-    "A": 76.8,
-    "B": 90.0,
-    "C": 34.1,
-    "D": 82.0
+    "A": 49.5,
+    "B": 71.4,
+    "C": 69.3,
+    "D": 83.8
    },
    "cb_sales_4q_won": 7686505663,
    "sales_yoy": 0.0538,
-   "share_2030_chg_pp": 1.87,
-   "flpop_yoy": 0.1258,
+   "sales_yoy_2q": 0.1069,
+   "txn_yoy": -0.0248,
    "stores_4q_avg": 56.0,
    "store_yoy": 0.1667,
-   "close_rt_pct": 10.4,
-   "coffee_sales_per_store_won_4q": 147135266,
+   "close_rate": 0.1042,
+   "morning_share": 0.228,
+   "weekend_share": 0.1637,
+   "corp_share": 0.1858,
    "fac_subway": 0,
-   "fac_total": 41,
    "chg_ix": "HH",
    "overheat": false,
-   "rank_before_filter": 10
-  },
-  {
-   "rank": 8,
-   "TRDAR_CD": "3120101",
-   "name": "합정역",
-   "type": "발달상권",
-   "gu": "마포구",
-   "dong": "서교동",
-   "lon": 126.913486,
-   "lat": 37.549468,
-   "score": 69.7,
-   "axis": {
-    "A": 75.4,
-    "B": 77.7,
-    "C": 60.0,
-    "D": 65.6
-   },
-   "cb_sales_4q_won": 15608382922,
-   "sales_yoy": 0.0779,
-   "share_2030_chg_pp": 0.03,
-   "flpop_yoy": -0.0091,
-   "stores_4q_avg": 103.0,
-   "store_yoy": -0.0329,
-   "close_rt_pct": 11.3,
-   "coffee_sales_per_store_won_4q": 139203797,
-   "fac_subway": 2,
-   "fac_total": 81,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 11
+   "investable": true,
+   "rank_all_population": 25
   },
   {
    "rank": 9,
-   "TRDAR_CD": "3120145",
-   "name": "영등포역(영등포)",
-   "type": "발달상권",
-   "gu": "영등포구",
-   "dong": "영등포동",
-   "lon": 126.905683,
-   "lat": 37.518432,
-   "score": 69.6,
-   "axis": {
-    "A": 57.3,
-    "B": 80.8,
-    "C": 53.0,
-    "D": 87.3
-   },
-   "cb_sales_4q_won": 21366133578,
-   "sales_yoy": 0.1852,
-   "share_2030_chg_pp": -3.24,
-   "flpop_yoy": -0.0023,
-   "stores_4q_avg": 95.0,
-   "store_yoy": 0.027,
-   "close_rt_pct": 7.6,
-   "coffee_sales_per_store_won_4q": 227239218,
-   "fac_subway": 0,
-   "fac_total": 206,
-   "chg_ix": "HH",
-   "overheat": false,
-   "rank_before_filter": 12
-  },
-  {
-   "rank": 10,
-   "TRDAR_CD": "3120021",
-   "name": "시청역_8번",
-   "type": "발달상권",
-   "gu": "중구",
-   "dong": "소공동",
-   "lon": 126.97424,
-   "lat": 37.56176,
-   "score": 69.6,
-   "axis": {
-    "A": 82.2,
-    "B": 50.7,
-    "C": 52.0,
-    "D": 93.5
-   },
-   "cb_sales_4q_won": 51951737199,
-   "sales_yoy": 0.071,
-   "share_2030_chg_pp": 5.02,
-   "flpop_yoy": -0.0568,
-   "stores_4q_avg": 43.8,
-   "store_yoy": -0.0789,
-   "close_rt_pct": 18.9,
-   "coffee_sales_per_store_won_4q": 1290135751,
-   "fac_subway": 0,
-   "fac_total": 52,
-   "chg_ix": "HH",
-   "overheat": false,
-   "rank_before_filter": 13
-  }
- ],
- "top3": [
-  {
-   "rank": 1,
-   "TRDAR_CD": "3120243",
-   "name": "천호역",
-   "score": 76.0
-  },
-  {
-   "rank": 2,
-   "TRDAR_CD": "3120132",
-   "name": "독산동",
-   "score": 73.3
-  },
-  {
-   "rank": 3,
-   "TRDAR_CD": "3120065",
-   "name": "회기역",
-   "score": 72.7
-  }
- ],
- "final_site": {
-  "TRDAR_CD": "3120243",
-  "name": "천호역",
-  "gu": "강동구",
-  "dong": "천호2동",
-  "lon": 127.124442,
-  "lat": 37.539523,
-  "score": 76.0,
-  "axis": {
-   "A": 83.1,
-   "B": 84.0,
-   "C": 50.4,
-   "D": 86.3
-  },
-  "facilities": {
-   "fac_total": 130,
-   "fac_subway": 2,
-   "fac_bus_stop": 10,
-   "fac_univ": 0,
-   "fac_gnrl_hospital": 2
-  },
-  "facilities_note": "OA-15580 시점 미상 스냅샷, 개소",
-  "area_km2": 0.2153,
-  "kpis": {
-   "share_wkend": 0.3204,
-   "share_t00_06": 0.0028,
-   "share_t06_11": 0.1607,
-   "share_t11_14": 0.2508,
-   "share_t14_17": 0.2503,
-   "share_t17_21": 0.2796,
-   "share_t21_24": 0.0559,
-   "share_female": 0.5775,
-   "share_age10": 0.0107,
-   "share_age20": 0.2049,
-   "share_age30": 0.3177,
-   "share_age40": 0.1807,
-   "share_age50p": 0.286,
-   "share_unident": 0.0311,
-   "ticket_coffee_won": 5241,
-   "ticket_bakery_won": 10403,
-   "coffee_stores_2026Q2": 52,
-   "bakery_stores_2026Q2": 30,
-   "coffee_frc_share_2026Q2": 0.4423,
-   "bakery_frc_share_2026Q2": 0.2,
-   "open_4q": 11,
-   "close_4q": 7,
-   "coffee_sales_per_store_won_4q": 133655216,
-   "close_rate_pct_4q": 8.95,
-   "cb_sales_4q_won": 8444626251,
-   "sales_yoy": 0.1819,
-   "sales_cagr_3y_2023Q2_2026Q2": 0.0911,
-   "flpop_yoy": 0.1938,
-   "store_yoy": 0.0224,
-   "cb_sales_by_quarter_won": {
-    "20211": 1245082749,
-    "20212": 1457206315,
-    "20213": 1565131042,
-    "20214": 1468809318,
-    "20221": 1304469625,
-    "20222": 1685651350,
-    "20223": 1759612764,
-    "20224": 1604654961,
-    "20231": 1487958505,
-    "20232": 1648989521,
-    "20233": 1757840049,
-    "20234": 1424578189,
-    "20241": 1332349365,
-    "20242": 1448735641,
-    "20243": 1677326641,
-    "20244": 1715299619,
-    "20251": 1651992486,
-    "20252": 2100598206,
-    "20253": 2255336558,
-    "20254": 1908610545,
-    "20261": 1886100338,
-    "20262": 2394578810
-   }
-  },
-  "why": [
-   "총점 76.0점 1위(과열·상권축소 필터 후 624개 중): 수요 83.1·유입 84.0·체력 86.3점이 모두 상위권",
-   "매출 YoY +18.2%(모집단 중앙 +1.9%), 3년 CAGR +9.1%, 유동인구 +19.4% vs 점포 +2.2% → 수요가 공급보다 빠름",
-   "폐업률 8.9%/년(중앙 12.9%), 연매출 규모 84억원, 지하철역 2개·버스정거장 10개·종합병원 2개 (집객시설 130개소)"
-  ],
-  "location": {
-   "description": "천호역(5·8호선 환승) 상권 대표점 기준 반경 내, 천호대로·올림픽로가 만나는 천호사거리 일대(강동구 천호2동). 저녁·주말 비중이 높아 역 출구~로데오거리 보행 동선의 1층 코너, 베이커리 진열이 보이는 전면 유리형 점포 권장.",
-   "data_basis": "trdar.csv 상권명·행정동·대표점 좌표(EPSG:5181 추정→WGS84), 집객시설 OA-15580(지하철역 2·버스정거장 10·종합병원 2)",
-   "external_knowledge_flag": "5·8호선 환승역·천호사거리·로데오거리 명칭은 데이터셋 외 일반 지리 정보(검증 필요)",
-   "lon": 127.124442,
-   "lat": 37.539523
-  }
- },
- "customer_profile": {
-  "TRDAR_CD": "3120243",
-  "period": "2025Q3~2026Q2(4분기, 매출 가중)",
-  "unit": "비율(0~1), 원/건, 원/4분기/점포, 개, %/년",
-  "source": "OA-15572, OA-15577",
-  "share_wkend": 0.3204,
-  "share_t00_06": 0.0028,
-  "share_t06_11": 0.1607,
-  "share_t11_14": 0.2508,
-  "share_t14_17": 0.2503,
-  "share_t17_21": 0.2796,
-  "share_t21_24": 0.0559,
-  "share_female": 0.5775,
-  "share_age10": 0.0107,
-  "share_age20": 0.2049,
-  "share_age30": 0.3177,
-  "share_age40": 0.1807,
-  "share_age50p": 0.286,
-  "share_unident": 0.0311,
-  "ticket_coffee_won": 5241,
-  "ticket_bakery_won": 10403,
-  "coffee_stores_2026Q2": 52,
-  "bakery_stores_2026Q2": 30,
-  "coffee_frc_share_2026Q2": 0.4423,
-  "bakery_frc_share_2026Q2": 0.2,
-  "open_4q": 11,
-  "close_4q": 7,
-  "coffee_sales_per_store_won_4q": 133655216,
-  "close_rate_pct_4q": 8.95,
-  "cb_sales_4q_won": 8444626251,
-  "sales_yoy": 0.1819,
-  "sales_cagr_3y_2023Q2_2026Q2": 0.0911,
-  "flpop_yoy": 0.1938,
-  "store_yoy": 0.0224
- },
- "seoul_benchmarks": {
-  "scope": "분석 모집단 783개 상권 합산(매출 가중) 또는 중앙값",
-  "period": "2025Q3~2026Q2",
-  "share_wkend": 0.2571,
-  "share_t00_06": 0.0059,
-  "share_t06_11": 0.155,
-  "share_t11_14": 0.3375,
-  "share_t14_17": 0.2416,
-  "share_t17_21": 0.2161,
-  "share_t21_24": 0.044,
-  "share_female": 0.5598,
-  "share_age10": 0.011,
-  "share_age20": 0.19,
-  "share_age30": 0.28,
-  "share_age40": 0.2149,
-  "share_age50p": 0.3041,
-  "share_unident": 0.1315,
-  "ticket_coffee_won": 8005,
-  "ticket_bakery_won": 10881,
-  "coffee_sales_per_store_won_4q_median": 73165335,
-  "close_rate_pct_4q_median": 12.94,
-  "coffee_frc_share_2026Q2": 0.2589,
-  "bakery_frc_share_2026Q2": 0.2419,
-  "sales_yoy_median": 0.0191,
-  "n_trdar": 783
- },
- "hot_places": [
-  {
-   "rank": 364,
-   "TRDAR_CD": "3110131",
-   "name": "성수동카페거리",
-   "type": "골목상권",
-   "gu": "성동구",
-   "dong": "성수2가1동",
-   "lon": 127.053363,
-   "lat": 37.542604,
-   "score": 47.8,
-   "axis": {
-    "A": 55.1,
-    "B": 61.6,
-    "C": 44.1,
-    "D": 30.4
-   },
-   "cb_sales_4q_won": 6200009821,
-   "sales_yoy": 0.1621,
-   "share_2030_chg_pp": -3.44,
-   "flpop_yoy": 0.0697,
-   "stores_4q_avg": 64.8,
-   "store_yoy": 0.1116,
-   "close_rt_pct": 6.9,
-   "coffee_sales_per_store_won_4q": 115921048,
-   "fac_subway": 0,
-   "fac_total": 5,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 452,
-   "excluded_reason": null
-  },
-  {
-   "rank": 69,
-   "TRDAR_CD": "3120052",
-   "name": "성수역",
-   "type": "발달상권",
-   "gu": "성동구",
-   "dong": "성수2가3동",
-   "lon": 127.056669,
-   "lat": 37.544675,
-   "score": 62.4,
-   "axis": {
-    "A": 63.0,
-    "B": 71.9,
-    "C": 49.0,
-    "D": 65.9
-   },
-   "cb_sales_4q_won": 16822667701,
-   "sales_yoy": 0.0263,
-   "share_2030_chg_pp": -0.88,
-   "flpop_yoy": 0.0324,
-   "stores_4q_avg": 84.2,
-   "store_yoy": -0.0344,
-   "close_rt_pct": 16.0,
-   "coffee_sales_per_store_won_4q": 208978295,
-   "fac_subway": 1,
-   "fac_total": 60,
-   "chg_ix": "LH",
-   "overheat": false,
-   "rank_before_filter": 77,
-   "excluded_reason": null
-  },
-  {
-   "TRDAR_CD": "3130071",
-   "name": "성수역 골목형상점가",
-   "in_population": false,
-   "reason": "모집단 미포함(최근 4분기 매출 결측·구성 변동 또는 하한 미달)",
-   "cb_sales_4q_won": null
-  },
-  {
-   "rank": 209,
-   "TRDAR_CD": "3120047",
-   "name": "한남오거리",
-   "type": "발달상권",
-   "gu": "용산구",
-   "dong": "한남동",
-   "lon": 127.007569,
-   "lat": 37.533011,
-   "score": 55.2,
-   "axis": {
-    "A": 77.6,
-    "B": 56.7,
-    "C": 25.9,
-    "D": 60.4
-   },
-   "cb_sales_4q_won": 4048773734,
-   "sales_yoy": 0.4531,
-   "share_2030_chg_pp": -1.64,
-   "flpop_yoy": -0.0488,
-   "stores_4q_avg": 38.0,
-   "store_yoy": 0.0629,
-   "close_rt_pct": 16.8,
-   "coffee_sales_per_store_won_4q": 90808912,
-   "fac_subway": 0,
-   "fac_total": 48,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 251,
-   "excluded_reason": null
-  },
-  {
-   "rank": 267,
-   "TRDAR_CD": "3120104",
-   "name": "연남동(홍대)",
-   "type": "발달상권",
-   "gu": "마포구",
-   "dong": "연남동",
-   "lon": 126.922471,
-   "lat": 37.56007,
-   "score": 51.6,
-   "axis": {
-    "A": 36.6,
-    "B": 55.2,
-    "C": 51.1,
-    "D": 63.6
-   },
-   "cb_sales_4q_won": 35384517585,
-   "sales_yoy": -0.0691,
-   "share_2030_chg_pp": -2.37,
-   "flpop_yoy": 0.0182,
-   "stores_4q_avg": 289.2,
-   "store_yoy": -0.0366,
-   "close_rt_pct": 15.3,
-   "coffee_sales_per_store_won_4q": 139696864,
-   "fac_subway": 0,
-   "fac_total": 70,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 327,
-   "excluded_reason": null
-  },
-  {
-   "rank": 400,
-   "TRDAR_CD": "3110562",
-   "name": "연트럴파크(연남동주민센터)",
-   "type": "골목상권",
-   "gu": "마포구",
-   "dong": "연남동",
-   "lon": 126.923339,
-   "lat": 37.563765,
-   "score": 46.7,
-   "axis": {
-    "A": 55.9,
-    "B": 63.9,
-    "C": 33.9,
-    "D": 33.3
-   },
-   "cb_sales_4q_won": 4320917444,
-   "sales_yoy": 0.0458,
-   "share_2030_chg_pp": -2.21,
-   "flpop_yoy": 0.1135,
-   "stores_4q_avg": 84.2,
-   "store_yoy": 0.0151,
-   "close_rt_pct": 16.9,
-   "coffee_sales_per_store_won_4q": 59683395,
-   "fac_subway": 0,
-   "fac_total": 11,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 500,
-   "excluded_reason": null
-  },
-  {
-   "rank": 512,
-   "TRDAR_CD": "3120186",
-   "name": "가로수길",
-   "type": "발달상권",
-   "gu": "강남구",
-   "dong": "신사동",
-   "lon": 127.022579,
-   "lat": 37.520774,
-   "score": 41.5,
-   "axis": {
-    "A": 25.8,
-    "B": 36.1,
-    "C": 43.3,
-    "D": 60.7
-   },
-   "cb_sales_4q_won": 12512599788,
-   "sales_yoy": -0.1474,
-   "share_2030_chg_pp": -2.83,
-   "flpop_yoy": -0.0618,
-   "stores_4q_avg": 117.5,
-   "store_yoy": -0.0289,
-   "close_rt_pct": 18.2,
-   "coffee_sales_per_store_won_4q": 101594801,
-   "fac_subway": 0,
-   "fac_total": 44,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 637,
-   "excluded_reason": null
-  },
-  {
-   "rank": 394,
-   "TRDAR_CD": "3120202",
-   "name": "압구정로데오역(압구정로데오)",
-   "type": "발달상권",
-   "gu": "강남구",
-   "dong": "압구정동",
-   "lon": 127.040139,
-   "lat": 37.52677,
-   "score": 47.0,
-   "axis": {
-    "A": 18.3,
-    "B": 48.3,
-    "C": 52.1,
-    "D": 69.4
-   },
-   "cb_sales_4q_won": 6940866335,
-   "sales_yoy": -0.1145,
-   "share_2030_chg_pp": -4.37,
-   "flpop_yoy": -0.0356,
-   "stores_4q_avg": 94.8,
-   "store_yoy": 0.0026,
-   "close_rt_pct": 9.5,
-   "coffee_sales_per_store_won_4q": 93203589,
-   "fac_subway": 1,
-   "fac_total": 77,
-   "chg_ix": "LL",
-   "overheat": false,
-   "rank_before_filter": 490,
-   "excluded_reason": null
-  },
-  {
-   "rank": 356,
-   "TRDAR_CD": "3110759",
-   "name": "문래예술촌(문래창작촌)",
-   "type": "골목상권",
-   "gu": "영등포구",
-   "dong": "문래동",
-   "lon": 126.891458,
-   "lat": 37.514762,
-   "score": 48.3,
-   "axis": {
-    "A": 55.4,
-    "B": 41.2,
-    "C": 42.8,
-    "D": 53.6
-   },
-   "cb_sales_4q_won": 4758638296,
-   "sales_yoy": 0.0604,
-   "share_2030_chg_pp": -2.53,
-   "flpop_yoy": 0.025,
-   "stores_4q_avg": 74.5,
-   "store_yoy": 0.0719,
-   "close_rt_pct": 8.6,
-   "coffee_sales_per_store_won_4q": 74669269,
-   "fac_subway": 0,
-   "fac_total": 37,
-   "chg_ix": "LH",
-   "overheat": false,
-   "rank_before_filter": 443,
-   "excluded_reason": null
-  },
-  {
-   "rank": 11,
    "TRDAR_CD": "3120031",
    "name": "을지로3가역",
    "type": "발달상권",
@@ -1065,30 +1009,573 @@
    "dong": "을지로동",
    "lon": 126.991613,
    "lat": 37.566231,
-   "score": 69.6,
+   "score": 65.7,
    "axis": {
-    "A": 44.3,
-    "B": 86.1,
-    "C": 61.1,
-    "D": 86.8
+    "A": 67.9,
+    "B": 57.1,
+    "C": 90.1,
+    "D": 56.8
    },
    "cb_sales_4q_won": 26001362037,
    "sales_yoy": 0.0256,
-   "share_2030_chg_pp": -3.08,
-   "flpop_yoy": 0.0697,
+   "sales_yoy_2q": 0.125,
+   "txn_yoy": 0.0232,
    "stores_4q_avg": 104.2,
    "store_yoy": -0.0024,
-   "close_rt_pct": 7.7,
-   "coffee_sales_per_store_won_4q": 274453411,
+   "close_rate": 0.0766,
+   "morning_share": 0.1789,
+   "weekend_share": 0.1592,
+   "corp_share": 0.2328,
    "fac_subway": 2,
-   "fac_total": 70,
    "chg_ix": "HH",
    "overheat": false,
-   "rank_before_filter": 14,
+   "investable": true,
+   "rank_all_population": 28
+  },
+  {
+   "rank": 10,
+   "TRDAR_CD": "3120178",
+   "name": "신사역",
+   "type": "발달상권",
+   "gu": "서초구",
+   "dong": "잠원동",
+   "lon": 127.019557,
+   "lat": 37.515963,
+   "score": 65.5,
+   "axis": {
+    "A": 73.7,
+    "B": 55.0,
+    "C": 70.3,
+    "D": 68.8
+   },
+   "cb_sales_4q_won": 13681806102,
+   "sales_yoy": 0.2048,
+   "sales_yoy_2q": 0.2348,
+   "txn_yoy": 0.2378,
+   "stores_4q_avg": 83.5,
+   "store_yoy": 0.006,
+   "close_rate": 0.0602,
+   "morning_share": 0.1661,
+   "weekend_share": 0.1871,
+   "corp_share": 0.1569,
+   "fac_subway": 1,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 30
+  }
+ ],
+ "top3": [
+  {
+   "rank": 1,
+   "TRDAR_CD": "3120175",
+   "name": "남부터미널역",
+   "score": 71.3
+  },
+  {
+   "rank": 2,
+   "TRDAR_CD": "3120023",
+   "name": "서울시청",
+   "score": 69.3
+  },
+  {
+   "rank": 3,
+   "TRDAR_CD": "3130024",
+   "name": "남대문시장(자유상가)",
+   "score": 69.1
+  }
+ ],
+ "final_site": {
+  "TRDAR_CD": "3120175",
+  "name": "남부터미널역",
+  "gu": "서초구",
+  "dong": "서초1동",
+  "lon": 127.018113,
+  "lat": 37.485113,
+  "score": 71.3,
+  "axis": {
+   "A": 75.5,
+   "B": 68.0,
+   "C": 79.2,
+   "D": 62.6
+  },
+  "decided_by": "사용자 확정(2026-11-14), v2 점수 1위와 일치",
+  "facilities": {
+   "fac_total": 79,
+   "fac_subway": 1,
+   "fac_bus_stop": 14,
+   "fac_univ": 0,
+   "fac_gnrl_hospital": 2
+  },
+  "area_km2": 0.26,
+  "kpis": {
+   "share_wkend": 0.1859,
+   "share_t00_06": 0.0262,
+   "share_t06_11": 0.2397,
+   "share_t11_14": 0.363,
+   "share_t14_17": 0.1885,
+   "share_t17_21": 0.1527,
+   "share_t21_24": 0.0298,
+   "share_female": 0.4725,
+   "share_age10": 0.0072,
+   "share_age20": 0.1443,
+   "share_age30": 0.2901,
+   "share_age40": 0.2127,
+   "share_age50p": 0.3456,
+   "share_unident": 0.201,
+   "ticket_coffee_won": 5922,
+   "ticket_bakery_won": 9507,
+   "coffee_stores_2026Q2": 55,
+   "bakery_stores_2026Q2": 11,
+   "coffee_frc_share_2026Q2": 0.3091,
+   "bakery_frc_share_2026Q2": 0.5455,
+   "open_4q": 8,
+   "close_4q": 7,
+   "coffee_sales_per_store_won_4q": 169429647,
+   "cb_sales_4q_won": 13061303126,
+   "cb_stores_4q_avg": 66.75,
+   "sales_yoy": 0.1442,
+   "sales_yoy_2q": 0.1857,
+   "txn_yoy": 0.0963,
+   "ticket_yoy": 0.0437,
+   "growth_persistence_6q": 1.0,
+   "sales_cagr_3y_2023Q2_2026Q2": 0.0809,
+   "flpop_yoy": 0.0474,
+   "store_yoy": 0.0349,
+   "open_rate": 0.124,
+   "close_rate": 0.1085,
+   "cb_sales_by_quarter_won": {
+    "2021Q1": 1666991098,
+    "2021Q2": 1940640078,
+    "2021Q3": 2036050410,
+    "2021Q4": 2066686793,
+    "2022Q1": 1845734609,
+    "2022Q2": 1979099931,
+    "2022Q3": 2514236845,
+    "2022Q4": 2459163426,
+    "2023Q1": 2518828056,
+    "2023Q2": 2850638225,
+    "2023Q3": 3050581337,
+    "2023Q4": 2764156257,
+    "2024Q1": 2686174613,
+    "2024Q2": 2871451407,
+    "2024Q3": 2823819867,
+    "2024Q4": 2777884332,
+    "2025Q1": 2737962434,
+    "2025Q2": 3076032095,
+    "2025Q3": 3222562706,
+    "2025Q4": 2944980602,
+    "2026Q1": 3279996492,
+    "2026Q2": 3613763326
+   }
+  },
+  "why": [
+   "출점 적격 136개 상권(과열·상권축소 제외) 중 총점 71.3점 1위 — 매출 흐름 75.5·고객 구성 68.0·유동·접근성 79.2·공급 동학 62.6점",
+   "매출 YoY +14.4%, 최근 2분기 +18.6%, 결제건수 +9.6% → 손님 수가 늘어나는 성장",
+   "점포 순증 +3.5%·폐업률 10.8%/년, 지하철역 1개, 아침 매출 비중 24.0%"
+  ]
+ },
+ "customer_profile": {
+  "TRDAR_CD": "3120175",
+  "period": "2025Q3~2026Q2(4분기, 매출 가중)",
+  "unit": "비율(0~1), 원/건",
+  "source": "OA-15572, OA-15577",
+  "share_wkend": 0.1859,
+  "share_t00_06": 0.0262,
+  "share_t06_11": 0.2397,
+  "share_t11_14": 0.363,
+  "share_t14_17": 0.1885,
+  "share_t17_21": 0.1527,
+  "share_t21_24": 0.0298,
+  "share_female": 0.4725,
+  "share_age10": 0.0072,
+  "share_age20": 0.1443,
+  "share_age30": 0.2901,
+  "share_age40": 0.2127,
+  "share_age50p": 0.3456,
+  "share_unident": 0.201,
+  "ticket_coffee_won": 5922,
+  "ticket_bakery_won": 9507,
+  "coffee_stores_2026Q2": 55,
+  "bakery_stores_2026Q2": 11,
+  "coffee_frc_share_2026Q2": 0.3091,
+  "bakery_frc_share_2026Q2": 0.5455,
+  "open_4q": 8,
+  "close_4q": 7,
+  "coffee_sales_per_store_won_4q": 169429647,
+  "cb_sales_4q_won": 13061303126,
+  "cb_stores_4q_avg": 66.75,
+  "sales_yoy": 0.1442,
+  "sales_yoy_2q": 0.1857,
+  "txn_yoy": 0.0963,
+  "ticket_yoy": 0.0437,
+  "growth_persistence_6q": 1.0,
+  "sales_cagr_3y_2023Q2_2026Q2": 0.0809,
+  "flpop_yoy": 0.0474,
+  "store_yoy": 0.0349,
+  "open_rate": 0.124,
+  "close_rate": 0.1085
+ },
+ "benchmarks": {
+  "population": {
+   "scope": "분석 모집단 783개 상권",
+   "period": "2025Q3~2026Q2",
+   "share_wkend": 0.2571,
+   "share_t00_06": 0.0059,
+   "share_t06_11": 0.155,
+   "share_t11_14": 0.3375,
+   "share_t14_17": 0.2416,
+   "share_t17_21": 0.2161,
+   "share_t21_24": 0.044,
+   "share_female": 0.5598,
+   "share_age10": 0.011,
+   "share_age20": 0.19,
+   "share_age30": 0.28,
+   "share_age40": 0.2149,
+   "share_age50p": 0.3041,
+   "share_unident": 0.1315,
+   "ticket_coffee_won": 8005,
+   "ticket_bakery_won": 10881,
+   "coffee_frc_share_2026Q2": 0.2589,
+   "bakery_frc_share_2026Q2": 0.2419,
+   "coffee_sales_per_store_won_4q_median": 73165335,
+   "close_rate_4q_median": 0.1294,
+   "sales_yoy_median": 0.0191,
+   "n_trdar": 783
+  },
+  "investable": {
+   "scope": "출점 적격 158개 상권",
+   "period": "2025Q3~2026Q2",
+   "share_wkend": 0.2475,
+   "share_t00_06": 0.0062,
+   "share_t06_11": 0.1539,
+   "share_t11_14": 0.3442,
+   "share_t14_17": 0.2396,
+   "share_t17_21": 0.2132,
+   "share_t21_24": 0.043,
+   "share_female": 0.5607,
+   "share_age10": 0.0116,
+   "share_age20": 0.1995,
+   "share_age30": 0.2892,
+   "share_age40": 0.2154,
+   "share_age50p": 0.2843,
+   "share_unident": 0.1447,
+   "ticket_coffee_won": 8305,
+   "ticket_bakery_won": 11168,
+   "coffee_frc_share_2026Q2": 0.2878,
+   "bakery_frc_share_2026Q2": 0.2594,
+   "coffee_sales_per_store_won_4q_median": 185134272,
+   "close_rate_4q_median": 0.1301,
+   "sales_yoy_median": 0.0242,
+   "n_trdar": 158
+  }
+ },
+ "hot_places": [
+  {
+   "rank": 40,
+   "TRDAR_CD": "3110131",
+   "name": "성수동카페거리",
+   "type": "골목상권",
+   "gu": "성동구",
+   "dong": "성수2가1동",
+   "lon": 127.053363,
+   "lat": 37.542604,
+   "score": 57.7,
+   "axis": {
+    "A": 73.7,
+    "B": 31.7,
+    "C": 60.9,
+    "D": 83.1
+   },
+   "cb_sales_4q_won": 6200009821,
+   "sales_yoy": 0.1621,
+   "sales_yoy_2q": 0.1504,
+   "txn_yoy": 0.1272,
+   "stores_4q_avg": 64.8,
+   "store_yoy": 0.1116,
+   "close_rate": 0.0687,
+   "morning_share": 0.1023,
+   "weekend_share": 0.2964,
+   "corp_share": 0.1166,
+   "fac_subway": 0,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 170,
    "excluded_reason": null
   },
   {
-   "rank": 295,
+   "rank": 38,
+   "TRDAR_CD": "3120052",
+   "name": "성수역",
+   "type": "발달상권",
+   "gu": "성동구",
+   "dong": "성수2가3동",
+   "lon": 127.056669,
+   "lat": 37.544675,
+   "score": 57.9,
+   "axis": {
+    "A": 62.1,
+    "B": 51.6,
+    "C": 77.1,
+    "D": 45.2
+   },
+   "cb_sales_4q_won": 16822667701,
+   "sales_yoy": 0.0263,
+   "sales_yoy_2q": 0.1289,
+   "txn_yoy": 0.0195,
+   "stores_4q_avg": 84.2,
+   "store_yoy": -0.0344,
+   "close_rate": 0.1605,
+   "morning_share": 0.1543,
+   "weekend_share": 0.2521,
+   "corp_share": 0.1488,
+   "fac_subway": 1,
+   "chg_ix": "LH",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 164,
+   "excluded_reason": null
+  },
+  {
+   "TRDAR_CD": "3130071",
+   "name": "성수역 골목형상점가",
+   "in_population": false,
+   "reason": "분석 모집단 미포함(최근 4분기 매출 결측·업종구성 변동·하한 미달)"
+  },
+  {
+   "rank": null,
+   "TRDAR_CD": "3120047",
+   "name": "한남오거리",
+   "type": "발달상권",
+   "gu": "용산구",
+   "dong": "한남동",
+   "lon": 127.007569,
+   "lat": 37.533011,
+   "score": 56.3,
+   "axis": {
+    "A": 65.4,
+    "B": 55.8,
+    "C": 33.6,
+    "D": 62.1
+   },
+   "cb_sales_4q_won": 4048773734,
+   "sales_yoy": 0.4531,
+   "sales_yoy_2q": 0.1986,
+   "txn_yoy": 0.2251,
+   "stores_4q_avg": 38.0,
+   "store_yoy": 0.0629,
+   "close_rate": 0.1678,
+   "morning_share": 0.1754,
+   "weekend_share": 0.2618,
+   "corp_share": 0.1462,
+   "fac_subway": 0,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": false,
+   "rank_all_population": 199,
+   "excluded_reason": "출점 적격 미달(연매출 50억원 미만)"
+  },
+  {
+   "rank": 127,
+   "TRDAR_CD": "3120104",
+   "name": "연남동(홍대)",
+   "type": "발달상권",
+   "gu": "마포구",
+   "dong": "연남동",
+   "lon": 126.922471,
+   "lat": 37.56007,
+   "score": 37.1,
+   "axis": {
+    "A": 37.8,
+    "B": 21.0,
+    "C": 69.1,
+    "D": 41.3
+   },
+   "cb_sales_4q_won": 35384517585,
+   "sales_yoy": -0.0691,
+   "sales_yoy_2q": -0.0757,
+   "txn_yoy": -0.1047,
+   "stores_4q_avg": 289.2,
+   "store_yoy": -0.0366,
+   "close_rate": 0.1532,
+   "morning_share": 0.0727,
+   "weekend_share": 0.3696,
+   "corp_share": 0.0629,
+   "fac_subway": 0,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 726,
+   "excluded_reason": null
+  },
+  {
+   "rank": null,
+   "TRDAR_CD": "3110562",
+   "name": "연트럴파크(연남동주민센터)",
+   "type": "골목상권",
+   "gu": "마포구",
+   "dong": "연남동",
+   "lon": 126.923339,
+   "lat": 37.563765,
+   "score": 43.7,
+   "axis": {
+    "A": 61.6,
+    "B": 14.4,
+    "C": 63.4,
+    "D": 56.7
+   },
+   "cb_sales_4q_won": 4320917444,
+   "sales_yoy": 0.0458,
+   "sales_yoy_2q": 0.0786,
+   "txn_yoy": 0.0493,
+   "stores_4q_avg": 84.2,
+   "store_yoy": 0.0151,
+   "close_rate": 0.1687,
+   "morning_share": 0.0283,
+   "weekend_share": 0.464,
+   "corp_share": 0.0208,
+   "fac_subway": 0,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": false,
+   "rank_all_population": 602,
+   "excluded_reason": "출점 적격 미달(연매출 50억원 미만)"
+  },
+  {
+   "rank": 132,
+   "TRDAR_CD": "3120186",
+   "name": "가로수길",
+   "type": "발달상권",
+   "gu": "강남구",
+   "dong": "신사동",
+   "lon": 127.022579,
+   "lat": 37.520774,
+   "score": 33.3,
+   "axis": {
+    "A": 27.0,
+    "B": 27.1,
+    "C": 49.8,
+    "D": 43.6
+   },
+   "cb_sales_4q_won": 12512599788,
+   "sales_yoy": -0.1474,
+   "sales_yoy_2q": -0.1831,
+   "txn_yoy": -0.19,
+   "stores_4q_avg": 117.5,
+   "store_yoy": -0.0289,
+   "close_rate": 0.1818,
+   "morning_share": 0.0543,
+   "weekend_share": 0.3319,
+   "corp_share": 0.1268,
+   "fac_subway": 0,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 754,
+   "excluded_reason": null
+  },
+  {
+   "rank": 121,
+   "TRDAR_CD": "3120202",
+   "name": "압구정로데오역(압구정로데오)",
+   "type": "발달상권",
+   "gu": "강남구",
+   "dong": "압구정동",
+   "lon": 127.040139,
+   "lat": 37.52677,
+   "score": 40.2,
+   "axis": {
+    "A": 27.2,
+    "B": 26.9,
+    "C": 69.5,
+    "D": 67.9
+   },
+   "cb_sales_4q_won": 6940866335,
+   "sales_yoy": -0.1145,
+   "sales_yoy_2q": -0.0026,
+   "txn_yoy": -0.1755,
+   "stores_4q_avg": 94.8,
+   "store_yoy": 0.0026,
+   "close_rate": 0.0952,
+   "morning_share": 0.0686,
+   "weekend_share": 0.3307,
+   "corp_share": 0.1209,
+   "fac_subway": 1,
+   "chg_ix": "LL",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 666,
+   "excluded_reason": null
+  },
+  {
+   "rank": null,
+   "TRDAR_CD": "3110759",
+   "name": "문래예술촌(문래창작촌)",
+   "type": "골목상권",
+   "gu": "영등포구",
+   "dong": "문래동",
+   "lon": 126.891458,
+   "lat": 37.514762,
+   "score": 48.1,
+   "axis": {
+    "A": 59.6,
+    "B": 16.8,
+    "C": 68.9,
+    "D": 77.1
+   },
+   "cb_sales_4q_won": 4758638296,
+   "sales_yoy": 0.0604,
+   "sales_yoy_2q": 0.0117,
+   "txn_yoy": -0.0292,
+   "stores_4q_avg": 74.5,
+   "store_yoy": 0.0719,
+   "close_rate": 0.0863,
+   "morning_share": 0.0567,
+   "weekend_share": 0.3977,
+   "corp_share": 0.0601,
+   "fac_subway": 0,
+   "chg_ix": "LH",
+   "overheat": false,
+   "investable": false,
+   "rank_all_population": 464,
+   "excluded_reason": "출점 적격 미달(연매출 50억원 미만)"
+  },
+  {
+   "rank": 9,
+   "TRDAR_CD": "3120031",
+   "name": "을지로3가역",
+   "type": "발달상권",
+   "gu": "중구",
+   "dong": "을지로동",
+   "lon": 126.991613,
+   "lat": 37.566231,
+   "score": 65.7,
+   "axis": {
+    "A": 67.9,
+    "B": 57.1,
+    "C": 90.1,
+    "D": 56.8
+   },
+   "cb_sales_4q_won": 26001362037,
+   "sales_yoy": 0.0256,
+   "sales_yoy_2q": 0.125,
+   "txn_yoy": 0.0232,
+   "stores_4q_avg": 104.2,
+   "store_yoy": -0.0024,
+   "close_rate": 0.0766,
+   "morning_share": 0.1789,
+   "weekend_share": 0.1592,
+   "corp_share": 0.2328,
+   "fac_subway": 2,
+   "chg_ix": "HH",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 28,
+   "excluded_reason": null
+  },
+  {
+   "rank": 100,
    "TRDAR_CD": "3120002",
    "name": "서촌(경복궁역)",
    "type": "발달상권",
@@ -1096,30 +1583,32 @@
    "dong": "사직동",
    "lon": 126.971822,
    "lat": 37.579284,
-   "score": 50.2,
+   "score": 46.8,
    "axis": {
-    "A": 66.9,
-    "B": 26.4,
-    "C": 36.5,
-    "D": 70.8
+    "A": 57.4,
+    "B": 34.1,
+    "C": 40.5,
+    "D": 61.5
    },
    "cb_sales_4q_won": 21713087307,
    "sales_yoy": 0.0726,
-   "share_2030_chg_pp": -1.41,
-   "flpop_yoy": -0.0754,
+   "sales_yoy_2q": -0.0226,
+   "txn_yoy": 0.0774,
    "stores_4q_avg": 102.2,
    "store_yoy": 0.0302,
-   "close_rt_pct": 14.1,
-   "coffee_sales_per_store_won_4q": 233242393,
+   "close_rate": 0.1411,
+   "morning_share": 0.1005,
+   "weekend_share": 0.3785,
+   "corp_share": 0.0707,
    "fac_subway": 0,
-   "fac_total": 43,
    "chg_ix": "LH",
    "overheat": false,
-   "rank_before_filter": 367,
+   "investable": true,
+   "rank_all_population": 493,
    "excluded_reason": null
   },
   {
-   "rank": 138,
+   "rank": null,
    "TRDAR_CD": "3110554",
    "name": "망원역 1번",
    "type": "골목상권",
@@ -1127,30 +1616,32 @@
    "dong": "서교동",
    "lon": 126.912595,
    "lat": 37.556351,
-   "score": 58.9,
+   "score": 39.8,
    "axis": {
-    "A": 87.5,
-    "B": 51.9,
-    "C": 67.2,
-    "D": 29.0
+    "A": 61.7,
+    "B": 21.9,
+    "C": 50.3,
+    "D": 26.9
    },
    "cb_sales_4q_won": 1840536690,
    "sales_yoy": 0.3884,
-   "share_2030_chg_pp": 0.25,
-   "flpop_yoy": -0.0229,
+   "sales_yoy_2q": 0.476,
+   "txn_yoy": 0.0897,
    "stores_4q_avg": 33.0,
    "store_yoy": -0.1141,
-   "close_rt_pct": 13.4,
-   "coffee_sales_per_store_won_4q": 62969751,
+   "close_rate": 0.1342,
+   "morning_share": 0.0526,
+   "weekend_share": 0.3696,
+   "corp_share": 0.0641,
    "fac_subway": 0,
-   "fac_total": 8,
    "chg_ix": "LL",
    "overheat": false,
-   "rank_before_filter": 156,
-   "excluded_reason": null
+   "investable": false,
+   "rank_all_population": 675,
+   "excluded_reason": "출점 적격 미달(연매출 50억원 미만)"
   },
   {
-   "rank": 481,
+   "rank": null,
    "TRDAR_CD": "3111013",
    "name": "송파나루역 1번(송리단길)",
    "type": "골목상권",
@@ -1158,86 +1649,153 @@
    "dong": "송파1동",
    "lon": 127.108206,
    "lat": 37.509383,
-   "score": 43.2,
+   "score": 41.5,
    "axis": {
-    "A": 45.7,
-    "B": 51.8,
-    "C": 38.6,
-    "D": 36.7
+    "A": 57.3,
+    "B": 18.2,
+    "C": 58.9,
+    "D": 47.1
    },
    "cb_sales_4q_won": 4994609172,
    "sales_yoy": -0.0334,
-   "share_2030_chg_pp": -1.85,
-   "flpop_yoy": -0.0234,
+   "sales_yoy_2q": 0.1231,
+   "txn_yoy": -0.0117,
    "stores_4q_avg": 99.2,
    "store_yoy": -0.0075,
-   "close_rt_pct": 18.0,
-   "coffee_sales_per_store_won_4q": 59214902,
+   "close_rate": 0.18,
+   "morning_share": 0.0607,
+   "weekend_share": 0.404,
+   "corp_share": 0.0497,
    "fac_subway": 0,
-   "fac_total": 12,
    "chg_ix": "LL",
    "overheat": false,
-   "rank_before_filter": 597,
+   "investable": false,
+   "rank_all_population": 641,
+   "excluded_reason": "출점 적격 미달(연매출 50억원 미만)"
+  },
+  {
+   "rank": 16,
+   "TRDAR_CD": "3120243",
+   "name": "천호역",
+   "type": "발달상권",
+   "gu": "강동구",
+   "dong": "천호2동",
+   "lon": 127.124442,
+   "lat": 37.539523,
+   "score": 63.9,
+   "axis": {
+    "A": 77.4,
+    "B": 39.6,
+    "C": 91.2,
+    "D": 66.2
+   },
+   "cb_sales_4q_won": 8444626251,
+   "sales_yoy": 0.1819,
+   "sales_yoy_2q": 0.1407,
+   "txn_yoy": 0.223,
+   "stores_4q_avg": 80.0,
+   "store_yoy": 0.0224,
+   "close_rate": 0.0895,
+   "morning_share": 0.1607,
+   "weekend_share": 0.3204,
+   "corp_share": 0.0311,
+   "fac_subway": 2,
+   "chg_ix": "HH",
+   "overheat": false,
+   "investable": true,
+   "rank_all_population": 50,
    "excluded_reason": null
   }
  ],
  "insight_inputs": {
-  "momentum_decile_3y_cagr": {
-   "top10pct_by_2023Q2_yoy": -0.0028,
-   "bottom10pct": -0.0192,
-   "unit": "2023Q2→2026Q2 매출 CAGR 중앙값"
-  },
-  "store_growth_quintile_3y_cagr": {
-   "top20pct_store_growth": -0.0176,
-   "bottom20pct": -0.0145
-  },
-  "sales_per_store_quintile_3y_cagr": {
-   "top20pct": -0.0071,
-   "bottom20pct": 0.0022
-  },
-  "morning_06_11_share": {
-   "top30_2023Q2_4q": 0.1684,
-   "top30_2026Q2_4q": 0.1794,
-   "pop_2023Q2_4q": 0.1433,
-   "pop_2026Q2_4q": 0.155
+  "period": "기준시점 2022Q4·2023Q1·2023Q2 → 각 3년 뒤 (4분기 합 CAGR, 5분위 중앙값의 3개 기준시점 평균)",
+  "unit": "연평균 성장률",
+  "quintiles_3y": {
+   "B7_weekend_share": {
+    "top20_cagr_med": -0.0101,
+    "bottom20_cagr_med": -0.0059,
+    "spread_pp": -0.42,
+    "origins": 3
+   },
+   "B6_evening_share": {
+    "top20_cagr_med": -0.0175,
+    "bottom20_cagr_med": -0.0083,
+    "spread_pp": -0.92,
+    "origins": 3
+   },
+   "B5_morning_share": {
+    "top20_cagr_med": -0.0093,
+    "bottom20_cagr_med": -0.0242,
+    "spread_pp": 1.49,
+    "origins": 3
+   },
+   "B4_corp_share": {
+    "top20_cagr_med": -0.0133,
+    "bottom20_cagr_med": -0.019,
+    "spread_pp": 0.58,
+    "origins": 3
+   },
+   "A4_txn_yoy": {
+    "top20_cagr_med": -0.0069,
+    "bottom20_cagr_med": -0.0206,
+    "spread_pp": 1.36,
+    "origins": 3
+   },
+   "A5_ticket_yoy": {
+    "top20_cagr_med": -0.0302,
+    "bottom20_cagr_med": -0.0045,
+    "spread_pp": -2.57,
+    "origins": 3
+   },
+   "A1_sales_yoy": {
+    "top20_cagr_med": -0.0088,
+    "bottom20_cagr_med": -0.0229,
+    "spread_pp": 1.42,
+    "origins": 3
+   },
+   "D1_store_yoy": {
+    "top20_cagr_med": -0.0143,
+    "bottom20_cagr_med": -0.0131,
+    "spread_pp": -0.12,
+    "origins": 3
+   }
   }
  },
  "sources": {
-  "OA-15572": "서울시 상권분석서비스(추정매출-상권) VwsmTrdarSelngQq, 2021Q1~2026Q2, 원/분기(추정)",
-  "OA-15577": "서울시 상권분석서비스(점포-상권) VwsmTrdarStorQq, 2021Q1~2026Q2, 개(분기 스톡)·개/분기",
+  "OA-15572": "서울시 상권분석서비스(추정매출-상권) VwsmTrdarSelngQq, 2021Q1~2026Q2, 원/분기(카드 기반 추정)",
+  "OA-15577": "서울시 상권분석서비스(점포-상권) VwsmTrdarStorQq, 2021Q1~2026Q2, 개",
   "OA-15568": "서울시 상권분석서비스(길단위인구-상권) VwsmTrdarFlpopQq, 2021Q1~2026Q2, 상대지수",
-  "OA-15584": "서울시 상권분석서비스(상주인구-상권) VwsmTrdarRepopQq, 실제 갱신 2022Q4·2023Q4, 명",
-  "OA-15580": "서울시 상권분석서비스(집객시설-상권) VwsmTrdarFcltyQq, 시점 미상 스냅샷, 개소",
-  "OA-15576": "서울시 상권분석서비스(상권변화지표-상권) VwsmTrdarIxQq, 2021Q1~2026Q2, 개월·등급",
-  "OA-15560": "서울시 상권분석서비스(영역-상권) TbgisTrdarRelm, 현행 영역(2026-11-14 수집), m·㎡·WGS84(역투영)"
+  "OA-15580": "서울시 상권분석서비스(집객시설-상권) VwsmTrdarFcltyQq, 스냅샷, 개소",
+  "OA-15576": "서울시 상권분석서비스(상권변화지표-상권) VwsmTrdarIxQq, 2026Q2, 등급",
+  "OA-15560": "서울시 상권분석서비스(영역-상권) TbgisTrdarRelm, 좌표 EPSG:5181→WGS84, ㎡"
  },
  "insights": [
   {
-   "title": "뜬 곳은 이미 떴다: 성수카페거리·한남·연남·가로수길은 200위 밖",
-   "text": "성수동카페거리는 2023Q2→2026Q2 커피+제과 매출 연 +28.7%로 지난 3년 승자지만, 최근 1년 점포가 +11.2% 늘어 공급이 수요를 쫓는 중(2029 점수 364위). 한남오거리는 매출 YoY +45.3%에도 폐업률 16.8%/년(모집단 중앙값 12.9%)로 공급 축 하위(26점). 가로수길·압구정로데오는 매출 YoY -14.7%·-11.5%로 이미 하락. 핫플 12곳 중 8곳이 상권변화지표 LL(다이나믹: 운영·폐업 영업기간 모두 서울 평균 미만), Top10은 7곳이 HH(정체=오래 버티는 상권).",
-   "period": "2025Q3~2026Q2(4분기 합) 및 2022Q3~23Q2→2025Q3~26Q2",
-   "unit": "%/년, %/년(폐업률), 점수(0~100)",
-   "source": "OA-15572, OA-15577, OA-15576"
-  },
-  {
-   "title": "천호역은 '저녁·주말형 생활권 카페' — 오피스 상권과 정반대 시간표",
-   "text": "천호역 17~21시 매출 비중 28.0% vs 모집단 21.6%, 주말 32.0% vs 25.7%, 점심(11~14시) 25.1% vs 33.8%. 법인 등 미식별 매출 3.1% vs 13.2% → 오피스 법인카드가 아닌 개인 소비 상권. 20·30대 매출 비중 52.3% vs 47.0%.",
-   "period": "2025Q3~2026Q2(4분기, 매출 가중)",
-   "unit": "매출 비중(%)",
+   "title": "핫플의 '주말·저녁'이 아니라 '평일 아침' 상권이 큰다",
+   "text": "06~11시 매출 비중 상위 20% 상권의 이후 3년 매출 CAGR -0.9% vs 하위 20% -2.4% (격차 +1.5%p/년). 17~21시 비중 상위 20%는 -1.8% vs 하위 -0.8%, 주말 비중 상위 20%는 -1.0% vs 하위 -0.6%. 출근·일상 수요가 여가 수요보다 꾸준히 자랐다.",
+   "period": "기준시점 2022Q4·2023Q1·2023Q2 → 각 3년 뒤 (4분기 합 CAGR, 5분위 중앙값의 3개 기준시점 평균)",
+   "unit": "%/년",
    "source": "OA-15572"
   },
   {
-   "title": "싸게 많이 파는 상권: 객단가는 서울보다 35% 낮은데 점포당 매출은 1.8배",
-   "text": "천호역 커피 건당 결제액 5,241원 vs 모집단 8,005원, 그런데 커피 점포당 연매출 1.34억원 vs 중앙값 0.73억원. 커피 프랜차이즈 비중 44% vs 26%로 저가 체인이 트래픽을 흡수 중이고, 베이커리 건당 10,403원(커피의 약 2배)은 객단가를 올릴 레버. 유동인구 YoY +19.4%, 점포 YoY +2.2%로 수요가 공급보다 빠르게 늘고 있음.",
-   "period": "2025Q3~2026Q2(4분기), 점포는 2026Q2",
-   "unit": "원/건, 원/4분기/점포, %",
-   "source": "OA-15572, OA-15577, OA-15568"
+   "title": "가격으로 큰 상권은 멈추고, 손님 수로 큰 상권은 계속 큰다",
+   "text": "결제건수 성장 상위 20%의 이후 3년 CAGR -0.7% vs 하위 -2.1%, 건당 결제액 성장 상위 20%는 -3.0% vs 하위 -0.4%. 객단가 인상 성장은 지속되지 않는다.",
+   "period": "기준시점 2022Q4·2023Q1·2023Q2 → 각 3년 뒤 (4분기 합 CAGR, 5분위 중앙값의 3개 기준시점 평균)",
+   "unit": "%/년",
+   "source": "OA-15572"
   },
   {
-   "title": "백테스트의 교훈: '점포당 매출 높은 알짜 상권'은 다음 3년 덜 큰다",
-   "text": "2023Q2 기준 커피 점포당 매출 상위 20% 상권의 이후 3년 매출 CAGR 중앙값 -0.7% vs 하위 20% +0.2% (스피어만 -0.053). 높은 점포당 매출은 신규 진입을 불러 희석된다 → 수준이 아니라 '수요 성장 > 공급 성장'의 격차를 봐야 함. 천호역도 점포당 매출이 높아(1.8배) 이 위험에 노출되나, 점포 증가 +2.2%·폐업률 8.9%로 아직 희석 압력이 낮음 → 출점 후 핵심 모니터링 지표(경쟁 점포 순증).",
-   "period": "2023Q2 기준, 2022Q3~23Q2→2025Q3~26Q2",
-   "unit": "%/년",
+   "title": "뜬 곳은 이미 떴다: 성수·한남·연남·가로수길은 후보에서 밀려난다",
+   "text": "성수동카페거리 출점적격 40위; 한남오거리 출점 적격 미달(연매출 50억원 미만); 연남동(홍대) 출점적격 127위; 가로수길 출점적격 132위; 압구정로데오역(압구정로데오) 출점적격 121위. v1 1위였던 천호역(저녁·주말형)은 v2에서 적격 16위.",
+   "period": "2025Q3~2026Q2",
+   "unit": "순위",
+   "source": "OA-15572, OA-15577, OA-15576"
+  },
+  {
+   "title": "남부터미널역: 꾸준히, 손님 수로, 아침에 크는 상권",
+   "text": "연 커피+제과 매출 131억원, 매출 YoY +14.4%(적격 상권 중앙 +2.4%), 최근 2분기 YoY +18.6%, 결제건수 YoY +9.6%, 최근 6분기 중 6분기 성장. 점포는 +3.5%로 완만, 06~11시 매출 비중 24.0%(적격 상권 15.4%), 주말 18.6%(24.8%).",
+   "period": "2025Q3~2026Q2(4분기)",
+   "unit": "원, %",
    "source": "OA-15572, OA-15577"
   }
  ]

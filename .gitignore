@@ -1,3 +1,6 @@
 .env
 data/raw/
 __pycache__/
+video/proposal.mp4
+video/poster.png
+video/__pycache__/

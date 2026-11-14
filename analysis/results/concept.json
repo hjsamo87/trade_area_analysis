@@ -1,272 +1,420 @@
 {
- "meta": {
-  "site": "강동구 천호역 상권(TRDAR 3120243)",
-  "basis_period": "2025Q3~2026Q2(4분기, 매출 가중)",
-  "source": "analysis/results/analysis.json customer_profile·seoul_benchmarks(OA-15572, OA-15577)",
-  "note": "가격·원가율·평수·좌석·인원은 데이터 기반 가정값(설계값)이며 데이터 관측치가 아님"
- },
- "concept_one_liner": "천호 '저녁·주말 빵집 카페' - 저가커피가 못 파는 갓구운 빵으로 객단가를 2배로, 17시 베이킹으로 퇴근길과 주말 가족을 잡는다",
- "brand_name_working": "천호 5시 베이커리 카페(가칭)",
- "area_pyeong": 45,
- "area_m2": 148.8,
- "area_split": {
-  "bakery_kitchen_oven_pyeong": 12,
-  "counter_showcase_takeout_pyeong": 8,
-  "seating_pyeong": 22,
-  "restroom_storage_pyeong": 3
- },
- "floor": "1층 코너, 전면 유리(쇼케이스 외부 노출)",
- "seats": 48,
- "seat_mix": {
-  "2인석": {
-   "tables": 10,
-   "seats": 20
+  "meta": {
+    "version": "v2",
+    "site": "서초구 남부터미널역 상권(TRDAR 3120175)",
+    "based_on": "analysis/results/analysis.json (v2) final_site.kpis, customer_profile, benchmarks.investable",
+    "data_period": "2025Q3~2026Q2(최근 4분기, 매출 가중)",
+    "sources": "OA-15572(추정매출)·OA-15577(점포), 2025Q3~2026Q2 4분기, analysis.json",
+    "benchmark_scope": "benchmarks.investable = 출점 적격 158개 상권 평균(연매출 50억+). 순위 비교 모집단은 과열·축소 제외 136개",
+    "note": "'외부 정보'는 서울열린데이터 밖 일반 지식·업계 관행, '가정'은 모델 가정으로 데이터로 확인된 사실이 아니다.",
+    "pnl_sync": "7단계(2026-11-14): daily_txn·annual_sales를 pnl.json 기준 시나리오와 정합화"
   },
-  "4인석(가족·주말)": {
-   "tables": 4,
-   "seats": 16
+  "concept_one_liner": "서초 출근길의 '7시 베이커리' — 90초 픽업 모닝 세트와 매장에서 구운 빵으로 평일 아침 손님 수(건수)를 쌓는 오피스형 베이커리 카페",
+  "brand_name_working": "SEVEN OVEN 서초 (가칭)",
+  "positioning": {
+    "price": "아메리카노 3,800원 — 저가커피(1,500~2,000원대, 외부 정보)와 가격 경쟁하지 않고 상권 커피 객단가 5,922원 수준(적격 평균 8,305원보다 낮게)",
+    "vs_low_price_coffee": "저가커피가 못 하는 '아침 식사 해결(빵+커피 세트)'과 갓 구운 빵으로 차별화",
+    "vs_bakery_franchise": "상권 제과점 11개 중 프랜차이즈 54.5%(적격 평균 25.9%, 2026Q2) → 매장 오븐 장인형 베이커리 공백",
+    "vs_large_bakery_cafe": "교외 대형 베이커리카페(주말·체류형, 외부 정보)와 반대로 평일·아침·픽업형"
   },
-  "창가 바(1인·대기)": {
-   "seats": 8
+  "personas": [
+    {
+      "id": "P1",
+      "name": "출근길 7시 반, 서초 오피스 30~40대 직장인",
+      "share_basis": {
+        "아침(06~11시) 매출 비중": "24.0% vs 적격 15.4%",
+        "평일 매출 비중": "81.4% vs 적격 75.2%",
+        "30~40대 비중(연령 식별 매출)": "50.3%(30대 29.0%, 40대 21.3%)",
+        "남성 비중": "52.8% vs 적격 43.9%",
+        "상주인구": "3,906명(OA-15568, 2026Q2) — 거주가 아닌 출근 상권"
+      },
+      "need": "9시 전에 줄 서지 않고 아침을 해결 → 모바일 선주문 90초 픽업, 세트 6,900원",
+      "context_external": "서초동 법조타운(법원·검찰청)·오피스 밀집, 지하철 3호선(외부 정보)"
+    },
+    {
+      "id": "P2",
+      "name": "50대+ 전문직·법인 고객(회의·접대, 터미널·공연 방문)",
+      "share_basis": {
+        "50대 이상 비중": "34.6% vs 적격 28.4%",
+        "법인 등 성별·연령 미식별 매출 비중": "20.1% vs 적격 14.5%(DATA_DICTIONARY: 오피스 수요 대리지표)",
+        "점심(11~14시) 매출 비중": "36.3% vs 적격 34.4%",
+        "제과 객단가": "9,507원/건"
+      },
+      "need": "회의용 단체 주문·법인카드 결제, 덜 단 전통 재료 음료, 앉아서 대화할 테이블",
+      "context_external": "남부터미널(시외버스) 이용객, 예술의전당 공연 관람객 — 저녁·주말 보조 수요(외부 정보)"
+    }
+  ],
+  "area_pyeong": 45,
+  "area_m2": 148.8,
+  "floor": "1층(가로변 전면 6m 이상, 역 출구 도보 3분 이내 목표)",
+  "area_split": {
+    "베이커리 공방(데크오븐·컨벡션·발효실, 유리벽 오픈)": {
+      "pyeong": 13,
+      "share": 0.29
+    },
+    "주문·쇼케이스·픽업 존(픽업 선반 2단)": {
+      "pyeong": 9,
+      "share": 0.2
+    },
+    "좌석": {
+      "pyeong": 19,
+      "share": 0.42
+    },
+    "화장실·창고·직원실": {
+      "pyeong": 4,
+      "share": 0.09
+    }
   },
-  "외부 벤치(테이크아웃 대기)": {
-   "seats": 4
+  "seats": 48,
+  "seat_mix": {
+    "창가 1인 바석(콘센트)": 14,
+    "2인 테이블 x8": 16,
+    "4인 테이블 x3": 12,
+    "6인 미팅 테이블 x1(예약)": 6
+  },
+  "takeout_vs_dinein_sales": {
+    "takeout_pickup": 0.6,
+    "dine_in": 0.4,
+    "basis": "아침 24.0% 매출은 출근 동선 테이크아웃 위주로 가정, 점심 36.3% 이후 체류 혼합. 평일 81.4% → 주말 체류형 대형 좌석 불필요"
+  },
+  "layout_logic": [
+    "입구 옆 '모바일 오더 픽업 선반' — 아침 주문 동선과 체류 동선 분리(아침 매출 24.0%, 적격 평균 15.4%의 1.6배)",
+    "오븐은 입구에서 보이는 유리벽, 쇼케이스는 주문 줄 옆 — 빵 굽는 냄새·시각이 '저가커피 대신 들어올 이유'",
+    "06:30 오픈 전 1차 굽기(크루아상·소금빵), 10:30·14:00 2·3차 굽기 — 시간대 매출 비중에 맞춘 생산",
+    "6인 미팅 테이블·미팅박스 픽업 카운터 — 법인 등 미식별 매출 20.1%(적격 14.5%)"
+  ],
+  "mood": "아침엔 밝은 우드+스테인리스·높은 조도(10~15분 체류), 오후엔 낮은 조도·흡음 천장으로 50대+ 대화 체류",
+  "opening_hours": {
+    "weekday": "06:30-21:00",
+    "weekend": "08:00-20:00",
+    "basis": "06~11시 24.0%, 21~24시 3.0%, 00~06시 2.6% → 이른 오픈·21시 마감"
+  },
+  "avg_ticket_krw": 7600,
+  "avg_ticket_basis": "상권 커피+제과 4분기 매출 13,061,303,126원 / 결제 1,974,539건 = 6,615원/건(커피 5,922원, 제과 9,507원). 세트·빵 동반 구매로 상권 평균보다 약 15% 높은 7,600원 가정 — 적격 상권 커피 객단가 8,305원보다 낮게 유지. 인사이트(2): 상권 성장은 결제건수 +9.6% > 객단가 +4.4% → 추가 인상 없이 건수로 성장",
+  "daily_txn": {
+    "base_avg": 479,
+    "weekday": 546,
+    "weekend": 312,
+    "first_year_2027_base": 445,
+    "scenarios": {
+      "conservative": 401,
+      "base": 479,
+      "optimistic": 553
+    },
+    "basis": "상권 실측 점포당 일 결제: 커피 78.3건, 제과 95.0건, 커피+제과 평균 81.0건(2025Q3~2026Q2 결제건수/평균 점포수/365, OA-15572·OA-15577). 손익 모델(pnl.py)의 매출 교차검증 채택값(점유 10% 방식과 평균 점포 6배 방식의 평균)을 객단가 7,600원·364일로 환산한 정상화(2026 기준값) 일 479건 = 커피+제과 평균 점포의 약 5.9배(가정). 개점 첫해(2027) 램프업 92% 반영 시 약 445건. 평일/주말 배분은 상권 주말 매출 비중 18.6% 적용. 7단계에서 손익 모델과 정합화(이전 초안 340건은 인건비 구조상 손익분기 미달이라 폐기)."
+  },
+  "annual_sales_krw_est": 1325666628,
+  "annual_sales_basis": "정상화 일 479건 x 7,600원 x 364일 ≈ 13.3억원(가정, pnl.json 기준 시나리오 2026 기준값). 상권 커피+제과 4분기 매출 13,061,303,126원의 10.1%",
+  "daypart_mix": {
+    "site_actual_sales_share": {
+      "00-06": 0.0262,
+      "06-11": 0.2397,
+      "11-14": 0.363,
+      "14-17": 0.1885,
+      "17-21": 0.1527,
+      "21-24": 0.0298
+    },
+    "store_plan_sales_share": {
+      "06:30-11": 0.3,
+      "11-14": 0.33,
+      "14-17": 0.2,
+      "17-21": 0.17
+    },
+    "focus": {
+      "06:30-11": "7시 세트·아메리카노·크루아상 샌드위치(모바일 오더)",
+      "11-14": "바게트 샌드위치·샐러드볼·미팅박스",
+      "14-17": "흑임자 크림라떼·핸드드립·타르트",
+      "17-21": "식빵·빵 포장(퇴근길)·콜드브루 보틀, 20시 이후 마감 할인"
+    },
+    "basis": "상권 실측 비중에서 영업 외 시간(00~06·21~24시, 5.6%)을 재배분하고 아침을 약 +6%p 강화(아침 특화 전략, 가정)"
+  },
+  "weekday_weekend_mix": {
+    "weekday": 0.8141,
+    "weekend": 0.1859,
+    "basis": "상권 실측(매출 기준) 그대로"
+  },
+  "menu_items": [
+    {
+      "category": "커피",
+      "name": "아메리카노(HOT/ICE)",
+      "price_krw": 3800,
+      "cost_rate": 0.2,
+      "sales_share": 0.18,
+      "daypart": "아침",
+      "signature": ""
+    },
+    {
+      "category": "커피",
+      "name": "카페라떼",
+      "price_krw": 4500,
+      "cost_rate": 0.27,
+      "sales_share": 0.11,
+      "daypart": "전 시간",
+      "signature": ""
+    },
+    {
+      "category": "커피",
+      "name": "흑임자 크림라떼",
+      "price_krw": 5800,
+      "cost_rate": 0.3,
+      "sales_share": 0.06,
+      "daypart": "오후",
+      "signature": "S2"
+    },
+    {
+      "category": "커피",
+      "name": "핸드드립 싱글오리진",
+      "price_krw": 6000,
+      "cost_rate": 0.28,
+      "sales_share": 0.03,
+      "daypart": "오후",
+      "signature": ""
+    },
+    {
+      "category": "커피",
+      "name": "콜드브루 1L 보틀(사무실용)",
+      "price_krw": 14000,
+      "cost_rate": 0.25,
+      "sales_share": 0.03,
+      "daypart": "점심",
+      "signature": ""
+    },
+    {
+      "category": "논커피",
+      "name": "제철 과일 에이드·티",
+      "price_krw": 5500,
+      "cost_rate": 0.28,
+      "sales_share": 0.04,
+      "daypart": "오후",
+      "signature": ""
+    },
+    {
+      "category": "논커피",
+      "name": "쌍화·대추 밀크티",
+      "price_krw": 5500,
+      "cost_rate": 0.3,
+      "sales_share": 0.03,
+      "daypart": "오후",
+      "signature": ""
+    },
+    {
+      "category": "베이커리-아침",
+      "name": "7시 세트(아메리카노+소금빵/크루아상)",
+      "price_krw": 6900,
+      "cost_rate": 0.31,
+      "sales_share": 0.14,
+      "daypart": "아침",
+      "signature": "S1"
+    },
+    {
+      "category": "베이커리-아침",
+      "name": "햄치즈 크루아상 샌드위치",
+      "price_krw": 6500,
+      "cost_rate": 0.38,
+      "sales_share": 0.06,
+      "daypart": "아침",
+      "signature": ""
+    },
+    {
+      "category": "베이커리-식사",
+      "name": "잠봉뵈르·치킨 바게트 샌드위치",
+      "price_krw": 8500,
+      "cost_rate": 0.4,
+      "sales_share": 0.08,
+      "daypart": "점심",
+      "signature": ""
+    },
+    {
+      "category": "베이커리-식사",
+      "name": "그릭요거트·샐러드볼",
+      "price_krw": 7500,
+      "cost_rate": 0.4,
+      "sales_share": 0.03,
+      "daypart": "점심",
+      "signature": ""
+    },
+    {
+      "category": "베이커리",
+      "name": "소금빵·크루아상·식빵(단품/포장)",
+      "price_krw": 4200,
+      "cost_rate": 0.33,
+      "sales_share": 0.1,
+      "daypart": "전 시간",
+      "signature": ""
+    },
+    {
+      "category": "베이커리",
+      "name": "시즌 타르트·케이크 조각",
+      "price_krw": 6800,
+      "cost_rate": 0.35,
+      "sales_share": 0.04,
+      "daypart": "오후",
+      "signature": ""
+    },
+    {
+      "category": "법인·단체",
+      "name": "미팅 박스 10인(음료10+페이스트리10)",
+      "price_krw": 89000,
+      "cost_rate": 0.36,
+      "sales_share": 0.04,
+      "daypart": "오전·점심 예약",
+      "signature": "S3"
+    },
+    {
+      "category": "시즌",
+      "name": "시즌 음료·한정 빵(분기 교체)",
+      "price_krw": 6200,
+      "cost_rate": 0.32,
+      "sales_share": 0.03,
+      "daypart": "전 시간",
+      "signature": ""
+    }
+  ],
+  "menu_mix_by_category": {
+    "커피": {
+      "sales_share": 0.41,
+      "cost_rate": 0.243
+    },
+    "논커피": {
+      "sales_share": 0.07,
+      "cost_rate": 0.289
+    },
+    "베이커리-아침": {
+      "sales_share": 0.2,
+      "cost_rate": 0.331
+    },
+    "베이커리-식사": {
+      "sales_share": 0.11,
+      "cost_rate": 0.4
+    },
+    "베이커리": {
+      "sales_share": 0.14,
+      "cost_rate": 0.336
+    },
+    "법인·단체": {
+      "sales_share": 0.04,
+      "cost_rate": 0.36
+    },
+    "시즌": {
+      "sales_share": 0.03,
+      "cost_rate": 0.32
+    }
+  },
+  "blended_cost_rate": 0.301,
+  "cost_rate_basis": "원재료+포장재 기준 업계 통상 범위(커피 20~30%, 베이커리 33~40%) 적용 — 외부 정보/가정",
+  "signatures": [
+    {
+      "id": "S1",
+      "name": "7시 세트",
+      "price_krw": 6900,
+      "desc": "아메리카노+갓 구운 소금빵 또는 크루아상, 06:30~10:00, 모바일 선주문 90초 픽업",
+      "data_link": "아침 매출 24.0%(적격 15.4%)"
+    },
+    {
+      "id": "S2",
+      "name": "흑임자 크림라떼",
+      "price_krw": 5800,
+      "desc": "덜 단 전통 재료 크림, 오후 대화 체류용",
+      "data_link": "50대+ 34.6%(적격 28.4%)"
+    },
+    {
+      "id": "S3",
+      "name": "서초 미팅 박스(10인)",
+      "price_krw": 89000,
+      "desc": "전날 18시까지 예약, 08:30 픽업·배송, 법인 정기 계약",
+      "data_link": "법인 등 미식별 매출 20.1%(적격 14.5%)"
+    }
+  ],
+  "txn_growth_levers": [
+    {
+      "lever": "모바일 선주문·픽업 선반",
+      "target": "아침 결제의 40%를 앱 주문으로 — 피크 처리량 확대, 줄 이탈 방지"
+    },
+    {
+      "lever": "모닝 구독 '서초 패스' 월 59,000원",
+      "target": "평일 20회 아메리카노(회당 2,950원) + 빵 20% 할인 → 저가커피 고객 흡수, 개점 12개월 회원 600명 목표"
+    },
+    {
+      "lever": "스탬프·재방문",
+      "target": "10번째 7시 세트 무료, 주 3회 이상 방문 고객 비중 확대"
+    },
+    {
+      "lever": "법인 정기 계약",
+      "target": "인근 법인 30곳 미팅박스·콜드브루 보틀 정기 공급"
+    },
+    {
+      "lever": "객단가 인상 금지 원칙",
+      "target": "상권은 건수(+9.6%)로 컸다 — 객단가로 큰 상권은 멈춘다(인사이트 2). 가격 조정은 원가 연동 연 1회 이내"
+    }
+  ],
+  "staffing": {
+    "weekday": [
+      {
+        "time": "05:00-06:30",
+        "bakers": 2,
+        "baristas": 0,
+        "floor": 0,
+        "note": "1차 굽기"
+      },
+      {
+        "time": "06:30-11:00",
+        "bakers": 2,
+        "baristas": 3,
+        "floor": 1,
+        "note": "아침 피크, 픽업 담당 1"
+      },
+      {
+        "time": "11:00-14:00",
+        "bakers": 1,
+        "baristas": 3,
+        "floor": 2,
+        "note": "점심 피크·미팅박스"
+      },
+      {
+        "time": "14:00-17:00",
+        "bakers": 1,
+        "baristas": 2,
+        "floor": 1,
+        "note": "3차 굽기·체류"
+      },
+      {
+        "time": "17:00-21:00",
+        "bakers": 0,
+        "baristas": 2,
+        "floor": 1,
+        "note": "퇴근 포장·마감"
+      }
+    ],
+    "weekend": [
+      {
+        "time": "07:00-08:00",
+        "bakers": 1,
+        "baristas": 0,
+        "floor": 0,
+        "note": "굽기"
+      },
+      {
+        "time": "08:00-14:00",
+        "bakers": 1,
+        "baristas": 2,
+        "floor": 1,
+        "note": ""
+      },
+      {
+        "time": "14:00-20:00",
+        "bakers": 1,
+        "baristas": 2,
+        "floor": 1,
+        "note": ""
+      }
+    ],
+    "headcount": {
+      "store_manager": 1,
+      "head_baker": 1,
+      "full_time": 6,
+      "part_time": 8,
+      "fte_est": 11.5
+    },
+    "basis": "평일 일 결제 약 546건의 30%가 06:30~11시(시간당 평균 약 36건, 08~09시 피크 약 60건) → 바리스타 3인+픽업 1인. 주말 하루 결제는 평일의 57%"
   }
- },
- "takeout_vs_dinein_sales": {
-  "takeout": 0.55,
-  "dine_in": 0.45
- },
- "opening_hours": {
-  "weekday": "08:00-22:00",
-  "weekend": "09:00-22:00",
-  "hours_per_week": 96,
-  "days_per_year": 360,
-  "rationale": "00~06시 매출 0.3%, 21~24시 5.6%로 22시 마감. 06~11시 16.1%로 08시 오픈."
- },
- "avg_ticket_krw": 8800,
- "avg_ticket_basis": {
-  "area_coffee_ticket_krw": 5241,
-  "area_bakery_ticket_krw": 10403,
-  "benchmark_coffee_ticket_krw": 8005,
-  "assumption": "음료 단독 55%(약 5,300원, 상권 커피 객단가 5,241원 수준) + 베이커리 동반 45%(약 13,000원, 상권 제과 객단가 10,403원 + 음료 1잔 부착 일부)",
-  "formula": "0.55*5300+0.45*13000"
- },
- "daypart_mix": {
-  "08-11": 0.162,
-  "11-14": 0.251,
-  "14-17": 0.251,
-  "17-21": 0.28,
-  "21-22": 0.056,
-  "basis": "상권 시간대 매출 비중(06~11 16.1%, 11~14 25.1%, 14~17 25.0%, 17~21 28.0%, 21~24 5.6%, 00~06 0.3%)을 영업시간에 재정규화"
- },
- "weekday_weekend_mix": {
-  "weekday": 0.68,
-  "weekend": 0.32,
-  "basis": "상권 주말 매출 비중 32.0%(모집단 25.7%)"
- },
- "menu_mix_by_category": {
-  "coffee": {
-   "sales_share": 0.35,
-   "cost_rate": 0.228,
-   "avg_price_krw": 4590.0
-  },
-  "noncoffee": {
-   "sales_share": 0.12,
-   "cost_rate": 0.28,
-   "avg_price_krw": 5030.0
-  },
-  "bakery": {
-   "sales_share": 0.45,
-   "cost_rate": 0.329,
-   "avg_price_krw": 5660.0
-  },
-  "seasonal": {
-   "sales_share": 0.08,
-   "cost_rate": 0.326,
-   "avg_price_krw": 14420.0
-  }
- },
- "menu_items": [
-  {
-   "category": "coffee",
-   "name": "아메리카노",
-   "price_krw": 3800,
-   "cost_rate": 0.2,
-   "sales_share": 0.14,
-   "daypart_role": "전 시간대 기본(저가체인 1,500~2,000원과 가격경쟁 회피, 빵 동반 구매 유도)"
-  },
-  {
-   "category": "coffee",
-   "name": "카페라떼",
-   "price_krw": 4500,
-   "cost_rate": 0.24,
-   "sales_share": 0.08,
-   "daypart_role": "오전·오후"
-  },
-  {
-   "category": "coffee",
-   "name": "[시그니처] 천호 흑임자 크림라떼",
-   "price_krw": 5800,
-   "cost_rate": 0.27,
-   "sales_share": 0.08,
-   "daypart_role": "오후·주말 체류석"
-  },
-  {
-   "category": "coffee",
-   "name": "핸드드립/디카페인",
-   "price_krw": 5000,
-   "cost_rate": 0.22,
-   "sales_share": 0.05,
-   "daypart_role": "저녁(디카페인)·50대+"
-  },
-  {
-   "category": "noncoffee",
-   "name": "생과일 에이드·티",
-   "price_krw": 5200,
-   "cost_rate": 0.28,
-   "sales_share": 0.07,
-   "daypart_role": "오후·저녁"
-  },
-  {
-   "category": "noncoffee",
-   "name": "우유·곡물 음료(키즈·시니어)",
-   "price_krw": 4800,
-   "cost_rate": 0.28,
-   "sales_share": 0.05,
-   "daypart_role": "주말 가족"
-  },
-  {
-   "category": "bakery",
-   "name": "[시그니처] 5시 갓구운 소금빵(17시 배치)",
-   "price_krw": 3200,
-   "cost_rate": 0.3,
-   "sales_share": 0.12,
-   "daypart_role": "저녁 퇴근길 테이크아웃"
-  },
-  {
-   "category": "bakery",
-   "name": "식사빵(깜파뉴·식빵)",
-   "price_krw": 6500,
-   "cost_rate": 0.32,
-   "sales_share": 0.12,
-   "daypart_role": "저녁·주말 귀가 구매"
-  },
-  {
-   "category": "bakery",
-   "name": "크루아상·페이스트리",
-   "price_krw": 4500,
-   "cost_rate": 0.34,
-   "sales_share": 0.1,
-   "daypart_role": "오전·오후"
-  },
-  {
-   "category": "bakery",
-   "name": "샌드위치·포카치아(브런치)",
-   "price_krw": 8500,
-   "cost_rate": 0.36,
-   "sales_share": 0.11,
-   "daypart_role": "점심·주말 브런치"
-  },
-  {
-   "category": "seasonal",
-   "name": "[시그니처] 주말 패밀리 빵박스(6입)",
-   "price_krw": 19000,
-   "cost_rate": 0.33,
-   "sales_share": 0.05,
-   "daypart_role": "주말·50대+ 가족 선물"
-  },
-  {
-   "category": "seasonal",
-   "name": "시즌 케이크·한정 디저트",
-   "price_krw": 6800,
-   "cost_rate": 0.32,
-   "sales_share": 0.03,
-   "daypart_role": "시즌(크리스마스·명절)"
-  }
- ],
- "blended_cost_rate": 0.2875,
- "signatures": [
-  "5시 갓구운 소금빵(17시 배치, 3,200원)",
-  "천호 흑임자 크림라떼(5,800원)",
-  "주말 패밀리 빵박스 6입(19,000원)"
- ],
- "staffing": {
-  "weekday": {
-   "06-08": {
-    "baker": 2,
-    "barista_floor": 0
-   },
-   "08-11": {
-    "baker": 2,
-    "barista_floor": 2
-   },
-   "11-14": {
-    "baker": 1,
-    "barista_floor": 3
-   },
-   "14-17": {
-    "baker": 2,
-    "barista_floor": 2
-   },
-   "17-21": {
-    "baker": 1,
-    "barista_floor": 3
-   },
-   "21-22": {
-    "baker": 0,
-    "barista_floor": 2
-   }
-  },
-  "weekend": {
-   "07-09": {
-    "baker": 2,
-    "barista_floor": 0
-   },
-   "09-11": {
-    "baker": 2,
-    "barista_floor": 3
-   },
-   "11-17": {
-    "baker": 2,
-    "barista_floor": 4
-   },
-   "17-21": {
-    "baker": 1,
-    "barista_floor": 4
-   },
-   "21-22": {
-    "baker": 0,
-    "barista_floor": 2
-   }
-  },
-  "headcount": {
-   "store_manager": 1,
-   "head_baker": 1,
-   "baker": 2,
-   "barista_fulltime": 2,
-   "part_time": 6
-  },
-  "labor_hours_per_week_est": 620,
-  "note": "14~17시 베이커 2명은 17시 저녁 배치 준비. 저녁(17~21, 28.0%)·주말(32.0%)에 홀 인원 최다 배치."
- },
- "personas": [
-  {
-   "name": "퇴근길 30대 맞벌이 '천호 지은'(34, 여)",
-   "data": "30대 매출 31.8%(모집단 28.0%), 여성 57.8%, 17~21시 28.0%(모집단 21.6%), 법인 매출 3.1%(모집단 13.2%) → 직장인 상권이 아닌 귀가 생활권",
-   "need": "역에서 집 가는 길 5분 안에 커피+내일 아침 빵 픽업",
-   "offer": "17시 갓구운 소금빵, 식사빵, 모바일 사전주문 픽업 선반"
-  },
-  {
-   "name": "주말 3대 가족 '강동 순자'(58, 여)와 자녀 가족",
-   "data": "주말 매출 32.0%(모집단 25.7%), 50대+ 28.6%, 제과 객단가 10,403원(커피 5,241원의 2배)",
-   "need": "주말 브런치 체류와 선물용 빵",
-   "offer": "4인석, 패밀리 빵박스, 키즈·시니어 곡물음료"
-  }
- ],
- "differentiation_2026": [
-  "저가커피(상권 커피 프랜차이즈 44%, 객단가 5,241원)와 가격으로 싸우지 않고 아메리카노 3,800원 + 빵 동반으로 객단가 확보",
-  "점심(25.1%, 모집단 33.8%)이 아닌 저녁 17시 베이킹 배치로 시간대 차별화",
-  "베이커리 카페 경쟁 대비 '귀가 구매용 식사빵' 중심(대형 디저트 카페형 체류 공간 아님)"
- ]
 }

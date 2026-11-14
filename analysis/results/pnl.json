@@ -1,0 +1,725 @@
+{
+ "meta": {
+  "site": "서초구 남부터미널역 상권(TRDAR 3120175)",
+  "version": "v2",
+  "unit": "원(월 평균 또는 연간), 비율",
+  "basis_period": "상권 데이터 2025Q3~2026Q2(4분기), 손익 2027~2029(2027.1 개점 가정)",
+  "legend": "[D]=서울 열린데이터 기반, [E]=외부 공식 통계, [A]=업계 관행·설계 가정",
+  "concept_used": true,
+  "concept_note": "concept.json 값 사용(면적 45평·48석·객단가 7,600원·원가율 30.1%·364일·시간대 계획 비중)"
+ },
+ "data_inputs": {
+  "market_cb_sales_4q_won": 13061303126,
+  "market_cb_txn_4q": 1974539,
+  "cb_stores_avg": 66.75,
+  "txn_per_store_day": 81.0,
+  "sales_per_store_month_won": 16306246,
+  "market_ticket_won": 6615,
+  "daypart_sales_share": {
+   "00-06": 0.0262,
+   "06-11": 0.2397,
+   "11-14": 0.363,
+   "14-17": 0.1885,
+   "17-21": 0.1527,
+   "21-24": 0.0298
+  },
+  "sales_yoy": 0.1442,
+  "sales_cagr_3y_2023Q2_2026Q2": 0.0809,
+  "backtest_investable_3y": {
+   "top20_cagr": 0.0085,
+   "all_cagr": -0.0097,
+   "bottom20_cagr": -0.0233,
+   "origins": 3,
+   "spearman": 0.2323
+  },
+  "source": "OA-15572(추정매출·건수), OA-15577(점포), 2025Q3~2026Q2, panel.csv; 백테스트 analysis.json backtest.v2_investable.3y"
+ },
+ "scenarios": {
+  "보수": {
+   "revenue_crosscheck_2026basis": {
+    "A_share_won_month": 87075354,
+    "A_formula": "상권 커피+제과 연매출 130.6억[D] x 점유 8%[A] / 12",
+    "B_txn_won_month": 88746027,
+    "B_formula": "점포당 81건/일[D] x 5.0배[A] = 405건/일 x 객단가 7,220원 x 364일 / 12",
+    "B_txn_by_daypart": {
+     "06:30-11": 122,
+     "11-14": 134,
+     "14-17": 81,
+     "17-21": 69
+    },
+    "gap_A_vs_B": -0.019,
+    "used": 87910691,
+    "implied_share_of_market": 0.081,
+    "implied_multiple_of_avg_store": 5.39,
+    "implied_daily_txn": 401,
+    "implied_daily_txn_2027": 338,
+    "days_per_year": 364
+   },
+   "params": {
+    "share": 0.08,
+    "txn_mult": 5.0,
+    "ticket": 7220.0,
+    "growth": -0.0097,
+    "ramp": 0.85,
+    "cogs": 0.321,
+    "rent_mult": 1.2,
+    "ft": [
+     420,
+     400,
+     320,
+     300
+    ],
+    "pt_h_wk": 240,
+    "capex_py": 330,
+    "key_money": 120000000.0,
+    "rent_m2": 67800.0
+   },
+   "investment": {
+    "capex_interior_equip": 313500000,
+    "key_money": 120000000.0,
+    "preopen": 30000000.0,
+    "total_excl_deposit": 463500000,
+    "deposit_refundable": 100886400
+   },
+   "years": {
+    "2027": {
+     "monthly": {
+      "revenue": 73999263,
+      "cogs": 23753764,
+      "labor": 32511896,
+      "rent": 10088640,
+      "mgmt_fee": 744000,
+      "card_fee": 1109989,
+      "hq_fee": 2219978,
+      "marketing": 1479985,
+      "utilities": 2959971,
+      "supplies": 2219978,
+      "other": 739993,
+      "ebitda": -3828929,
+      "depreciation": 5225000,
+      "op_income": -9053929
+     },
+     "annual": {
+      "revenue": 887991162,
+      "cogs": 285045163,
+      "labor": 390142753,
+      "rent": 121063680,
+      "mgmt_fee": 8928000,
+      "card_fee": 13319867,
+      "hq_fee": 26639735,
+      "marketing": 17759823,
+      "utilities": 35519646,
+      "supplies": 26639735,
+      "other": 8879912,
+      "ebitda": -45947153,
+      "depreciation": 62700000,
+      "op_income": -108647153
+     },
+     "op_margin": -0.1224,
+     "ebitda_margin": -0.0517,
+     "bep_monthly_revenue": 90954187,
+     "bep_ratio": 1.229,
+     "labor_hours_week": 400,
+     "cogs_ratio": 0.321,
+     "labor_ratio": 0.4394,
+     "rent_ratio": 0.1464
+    },
+    "2028": {
+     "monthly": {
+      "revenue": 86213495,
+      "cogs": 27674532,
+      "labor": 33487253,
+      "rent": 10290413,
+      "mgmt_fee": 744000,
+      "card_fee": 1293202,
+      "hq_fee": 2586405,
+      "marketing": 1724270,
+      "utilities": 3448540,
+      "supplies": 2586405,
+      "other": 862135,
+      "ebitda": 1516340,
+      "depreciation": 5225000,
+      "op_income": -3708660
+     },
+     "annual": {
+      "revenue": 1034561938,
+      "cogs": 332094382,
+      "labor": 401847036,
+      "rent": 123484954,
+      "mgmt_fee": 8928000,
+      "card_fee": 15518429,
+      "hq_fee": 31036858,
+      "marketing": 20691239,
+      "utilities": 41382478,
+      "supplies": 31036858,
+      "other": 10345619,
+      "ebitda": 18196086,
+      "depreciation": 62700000,
+      "op_income": -44503914
+     },
+     "op_margin": -0.043,
+     "ebitda_margin": 0.0176,
+     "bep_monthly_revenue": 93158550,
+     "bep_ratio": 1.081,
+     "labor_hours_week": 400,
+     "cogs_ratio": 0.321,
+     "labor_ratio": 0.3884,
+     "rent_ratio": 0.128
+    },
+    "2029": {
+     "monthly": {
+      "revenue": 85377224,
+      "cogs": 27406089,
+      "labor": 34491871,
+      "rent": 10496221,
+      "mgmt_fee": 744000,
+      "card_fee": 1280658,
+      "hq_fee": 2561317,
+      "marketing": 1707544,
+      "utilities": 3415089,
+      "supplies": 2561317,
+      "other": 853772,
+      "ebitda": -140654,
+      "depreciation": 5225000,
+      "op_income": -5365654
+     },
+     "annual": {
+      "revenue": 1024526688,
+      "cogs": 328873067,
+      "labor": 413902447,
+      "rent": 125954653,
+      "mgmt_fee": 8928000,
+      "card_fee": 15367900,
+      "hq_fee": 30735801,
+      "marketing": 20490534,
+      "utilities": 40981068,
+      "supplies": 30735801,
+      "other": 10245267,
+      "ebitda": -1687848,
+      "depreciation": 62700000,
+      "op_income": -64387848
+     },
+     "op_margin": -0.0628,
+     "ebitda_margin": -0.0016,
+     "bep_monthly_revenue": 95425265,
+     "bep_ratio": 1.118,
+     "labor_hours_week": 400,
+     "cogs_ratio": 0.321,
+     "labor_ratio": 0.404,
+     "rent_ratio": 0.1317
+    }
+   },
+   "payback_years_pretax_ebitda": null
+  },
+  "기준": {
+   "revenue_crosscheck_2026basis": {
+    "A_share_won_month": 108844193,
+    "A_formula": "상권 커피+제과 연매출 130.6억[D] x 점유 10%[A] / 12",
+    "B_txn_won_month": 112100245,
+    "B_formula": "점포당 81건/일[D] x 6.0배[A] = 486건/일 x 객단가 7,600원 x 364일 / 12",
+    "B_txn_by_daypart": {
+     "06:30-11": 146,
+     "11-14": 160,
+     "14-17": 97,
+     "17-21": 83
+    },
+    "gap_A_vs_B": -0.029,
+    "used": 110472219,
+    "implied_share_of_market": 0.101,
+    "implied_multiple_of_avg_store": 6.77,
+    "implied_daily_txn": 479,
+    "implied_daily_txn_2027": 445,
+    "days_per_year": 364
+   },
+   "params": {
+    "share": 0.1,
+    "txn_mult": 6.0,
+    "ticket": 7600,
+    "growth": 0.0085,
+    "ramp": 0.92,
+    "cogs": 0.301,
+    "rent_mult": 1.0,
+    "ft": [
+     420,
+     400,
+     320,
+     300
+    ],
+    "pt_h_wk": 280,
+    "capex_py": 300,
+    "key_money": 100000000.0,
+    "rent_m2": 56500.0
+   },
+   "investment": {
+    "capex_interior_equip": 300000000,
+    "key_money": 100000000.0,
+    "preopen": 30000000.0,
+    "total_excl_deposit": 430000000,
+    "deposit_refundable": 84072000
+   },
+   "years": {
+    "2027": {
+     "monthly": {
+      "revenue": 102498334,
+      "cogs": 30851999,
+      "labor": 35073825,
+      "rent": 8407200,
+      "mgmt_fee": 744000,
+      "card_fee": 1537475,
+      "hq_fee": 3074950,
+      "marketing": 2049967,
+      "utilities": 4099933,
+      "supplies": 3074950,
+      "other": 1024983,
+      "ebitda": 12559052,
+      "depreciation": 5000000,
+      "op_income": 7559052
+     },
+     "annual": {
+      "revenue": 1229980009,
+      "cogs": 370223983,
+      "labor": 420885905,
+      "rent": 100886400,
+      "mgmt_fee": 8928000,
+      "card_fee": 18449700,
+      "hq_fee": 36899400,
+      "marketing": 24599600,
+      "utilities": 49199200,
+      "supplies": 36899400,
+      "other": 12299800,
+      "ebitda": 150708620,
+      "depreciation": 60000000,
+      "op_income": 90708620
+     },
+     "op_margin": 0.0737,
+     "ebitda_margin": 0.1225,
+     "bep_monthly_revenue": 88853837,
+     "bep_ratio": 0.867,
+     "labor_hours_week": 440,
+     "cogs_ratio": 0.301,
+     "labor_ratio": 0.3422,
+     "rent_ratio": 0.0893
+    },
+    "2028": {
+     "monthly": {
+      "revenue": 112358228,
+      "cogs": 33819827,
+      "labor": 36126040,
+      "rent": 8575344,
+      "mgmt_fee": 744000,
+      "card_fee": 1685373,
+      "hq_fee": 3370747,
+      "marketing": 2247165,
+      "utilities": 4494329,
+      "supplies": 3370747,
+      "other": 1123582,
+      "ebitda": 16801074,
+      "depreciation": 5000000,
+      "op_income": 11801074
+     },
+     "annual": {
+      "revenue": 1348298739,
+      "cogs": 405837920,
+      "labor": 433512483,
+      "rent": 102904128,
+      "mgmt_fee": 8928000,
+      "card_fee": 20224481,
+      "hq_fee": 40448962,
+      "marketing": 26965975,
+      "utilities": 53931950,
+      "supplies": 40448962,
+      "other": 13482987,
+      "ebitda": 201612891,
+      "depreciation": 60000000,
+      "op_income": 141612891
+     },
+     "op_margin": 0.105,
+     "ebitda_margin": 0.1495,
+     "bep_monthly_revenue": 91056650,
+     "bep_ratio": 0.81,
+     "labor_hours_week": 440,
+     "cogs_ratio": 0.301,
+     "labor_ratio": 0.3215,
+     "rent_ratio": 0.0829
+    },
+    "2029": {
+     "monthly": {
+      "revenue": 113313273,
+      "cogs": 34107295,
+      "labor": 37209821,
+      "rent": 8746851,
+      "mgmt_fee": 744000,
+      "card_fee": 1699699,
+      "hq_fee": 3399398,
+      "marketing": 2266265,
+      "utilities": 4532531,
+      "supplies": 3399398,
+      "other": 1133133,
+      "ebitda": 16074881,
+      "depreciation": 5000000,
+      "op_income": 11074881
+     },
+     "annual": {
+      "revenue": 1359759278,
+      "cogs": 409287543,
+      "labor": 446517857,
+      "rent": 104962211,
+      "mgmt_fee": 8928000,
+      "card_fee": 20396389,
+      "hq_fee": 40792778,
+      "marketing": 27195186,
+      "utilities": 54390371,
+      "supplies": 40792778,
+      "other": 13597593,
+      "ebitda": 192898572,
+      "depreciation": 60000000,
+      "op_income": 132898572
+     },
+     "op_margin": 0.0977,
+     "ebitda_margin": 0.1419,
+     "bep_monthly_revenue": 93322513,
+     "bep_ratio": 0.824,
+     "labor_hours_week": 440,
+     "cogs_ratio": 0.301,
+     "labor_ratio": 0.3284,
+     "rent_ratio": 0.0838
+    }
+   },
+   "payback_years_pretax_ebitda": 2.4
+  },
+  "낙관": {
+   "revenue_crosscheck_2026basis": {
+    "A_share_won_month": 130613031,
+    "A_formula": "상권 커피+제과 연매출 130.6억[D] x 점유 12%[A] / 12",
+    "B_txn_won_month": 137322800,
+    "B_formula": "점포당 81건/일[D] x 7.0배[A] = 567건/일 x 객단가 7,980원 x 364일 / 12",
+    "B_txn_by_daypart": {
+     "06:30-11": 170,
+     "11-14": 187,
+     "14-17": 113,
+     "17-21": 96
+    },
+    "gap_A_vs_B": -0.049,
+    "used": 133967916,
+    "implied_share_of_market": 0.123,
+    "implied_multiple_of_avg_store": 8.22,
+    "implied_daily_txn": 553,
+    "implied_daily_txn_2027": 576,
+    "days_per_year": 364
+   },
+   "params": {
+    "share": 0.12,
+    "txn_mult": 7.0,
+    "ticket": 7980.0,
+    "growth": 0.0404,
+    "ramp": 1.0,
+    "cogs": 0.286,
+    "rent_mult": 0.85,
+    "ft": [
+     420,
+     400,
+     320,
+     300
+    ],
+    "pt_h_wk": 320,
+    "capex_py": 280,
+    "key_money": 80000000.0,
+    "rent_m2": 48000.0
+   },
+   "investment": {
+    "capex_interior_equip": 291000000,
+    "key_money": 80000000.0,
+    "preopen": 30000000.0,
+    "total_excl_deposit": 401000000,
+    "deposit_refundable": 71424000
+   },
+   "years": {
+    "2027": {
+     "monthly": {
+      "revenue": 139380220,
+      "cogs": 39862743,
+      "labor": 37635755,
+      "rent": 7142400,
+      "mgmt_fee": 744000,
+      "card_fee": 2090703,
+      "hq_fee": 4181407,
+      "marketing": 2787604,
+      "utilities": 5575209,
+      "supplies": 4181407,
+      "other": 1393802,
+      "ebitda": 33785190,
+      "depreciation": 4850000,
+      "op_income": 28935190
+     },
+     "annual": {
+      "revenue": 1672562634,
+      "cogs": 478352913,
+      "labor": 451629058,
+      "rent": 85708800,
+      "mgmt_fee": 8928000,
+      "card_fee": 25088440,
+      "hq_fee": 50176879,
+      "marketing": 33451253,
+      "utilities": 66902505,
+      "supplies": 50176879,
+      "other": 16725626,
+      "ebitda": 405422281,
+      "depreciation": 58200000,
+      "op_income": 347222281
+     },
+     "op_margin": 0.2076,
+     "ebitda_margin": 0.2424,
+     "bep_monthly_revenue": 88527513,
+     "bep_ratio": 0.635,
+     "labor_hours_week": 480,
+     "cogs_ratio": 0.286,
+     "labor_ratio": 0.27,
+     "rent_ratio": 0.0566
+    },
+    "2028": {
+     "monthly": {
+      "revenue": 145011180,
+      "cogs": 41473198,
+      "labor": 38764827,
+      "rent": 7285248,
+      "mgmt_fee": 744000,
+      "card_fee": 2175168,
+      "hq_fee": 4350335,
+      "marketing": 2900224,
+      "utilities": 5800447,
+      "supplies": 4350335,
+      "other": 1450112,
+      "ebitda": 35717286,
+      "depreciation": 4850000,
+      "op_income": 30867286
+     },
+     "annual": {
+      "revenue": 1740134164,
+      "cogs": 497678371,
+      "labor": 465177929,
+      "rent": 87422976,
+      "mgmt_fee": 8928000,
+      "card_fee": 26102012,
+      "hq_fee": 52204025,
+      "marketing": 34802683,
+      "utilities": 69605367,
+      "supplies": 52204025,
+      "other": 17401342,
+      "ebitda": 428607434,
+      "depreciation": 58200000,
+      "op_income": 370407434
+     },
+     "op_margin": 0.2129,
+     "ebitda_margin": 0.2463,
+     "bep_monthly_revenue": 90762874,
+     "bep_ratio": 0.626,
+     "labor_hours_week": 480,
+     "cogs_ratio": 0.286,
+     "labor_ratio": 0.2673,
+     "rent_ratio": 0.0554
+    },
+    "2029": {
+     "monthly": {
+      "revenue": 150869632,
+      "cogs": 43148715,
+      "labor": 39927772,
+      "rent": 7430953,
+      "mgmt_fee": 744000,
+      "card_fee": 2263044,
+      "hq_fee": 4526089,
+      "marketing": 3017393,
+      "utilities": 6034785,
+      "supplies": 4526089,
+      "other": 1508696,
+      "ebitda": 37742095,
+      "depreciation": 4850000,
+      "op_income": 32892095
+     },
+     "annual": {
+      "revenue": 1810435585,
+      "cogs": 517784577,
+      "labor": 479133267,
+      "rent": 89171436,
+      "mgmt_fee": 8928000,
+      "card_fee": 27156534,
+      "hq_fee": 54313068,
+      "marketing": 36208712,
+      "utilities": 72417423,
+      "supplies": 54313068,
+      "other": 18104356,
+      "ebitda": 452905145,
+      "depreciation": 58200000,
+      "op_income": 394705145
+     },
+     "op_margin": 0.218,
+     "ebitda_margin": 0.2502,
+     "bep_monthly_revenue": 93062786,
+     "bep_ratio": 0.617,
+     "labor_hours_week": 480,
+     "cogs_ratio": 0.286,
+     "labor_ratio": 0.2647,
+     "rent_ratio": 0.0542
+    }
+   },
+   "payback_years_pretax_ebitda": 1.0
+  }
+ },
+ "headline": {
+  "base_2027_monthly_revenue": 102498334,
+  "base_2029_monthly_revenue": 113313273,
+  "base_2027_op_margin": 0.0737,
+  "base_2029_op_margin": 0.0977,
+  "base_bep_monthly_revenue_2027": 88853837,
+  "base_investment_excl_deposit": 430000000,
+  "base_payback_years": 2.4,
+  "range_payback_years": {
+   "보수": null,
+   "기준": 2.4,
+   "낙관": 1.0
+  },
+  "range_2029_op_margin": {
+   "보수": -0.0628,
+   "기준": 0.0977,
+   "낙관": 0.218
+  }
+ },
+ "assumptions": [
+  {
+   "item": "상권 커피+제과 매출",
+   "value": "130.6억원/년(4분기 합)",
+   "type": "D",
+   "source": "OA-15572, 2025Q3~2026Q2"
+  },
+  {
+   "item": "점포당 결제건수",
+   "value": "81.0건/일 (점포 평균 66.75개)",
+   "type": "D",
+   "source": "OA-15572 건수 / OA-15577 점포수, 같은 기간"
+  },
+  {
+   "item": "상권 객단가",
+   "value": "6,615원/건 (커피 5,922·제과 9,507)",
+   "type": "D",
+   "source": "OA-15572, 2025Q3~2026Q2"
+  },
+  {
+   "item": "시간대 매출 비중",
+   "value": "00-06 2.6%, 06-11 24.0%, 11-14 36.3%, 14-17 18.9%, 17-21 15.3%, 21-24 3.0%",
+   "type": "D",
+   "source": "OA-15572, 2025Q3~2026Q2(매출 가중)"
+  },
+  {
+   "item": "상권 성장률 2027~29",
+   "value": "보수 -0.97%(적격 상권 전체) / 기준 +0.85%(점수 상위20%) / 낙관 +4.04%(남부터미널 3년 CAGR 8.1%의 절반)",
+   "type": "D+A",
+   "source": "analysis.json backtest.v2_investable.3y: 롤링 기준시점 2022Q4·2023Q1·2023Q2 → 3년 뒤 실제 CAGR. 남부터미널 최근 YoY +14.4%는 지속 가정에 쓰지 않음(보수적)"
+  },
+  {
+   "item": "점유율",
+   "value": "8% / 10% / 12% (상권 커피+제과 점포 약 67개 중 45평 플래그십)",
+   "type": "A",
+   "source": "브랜드 프리미엄·규모 가정; 교차검증 (B)와 비교"
+  },
+  {
+   "item": "거래건수 배수",
+   "value": "상권 평균 점포의 5 / 6 / 7배",
+   "type": "A",
+   "source": "면적 45평(평균 소형점 약 15평의 3배) x 베이커리 동반·브랜드 1.7~2.3배"
+  },
+  {
+   "item": "객단가",
+   "value": "7,600원(기준, 보수 -5%, 낙관 +5%)",
+   "type": "D+A",
+   "source": "concept.json"
+  },
+  {
+   "item": "영업일·면적·좌석",
+   "value": "364일/년, 45평(148.8㎡), 48석",
+   "type": "A",
+   "source": "concept.json"
+  },
+  {
+   "item": "원가율",
+   "value": "32.1% / 30.1% / 28.6%",
+   "type": "A",
+   "source": "concept.json"
+  },
+  {
+   "item": "최저임금",
+   "value": "10,320원/시(2026), 2027~ 연 +3%",
+   "type": "E+A",
+   "source": "고용노동부 2026년 적용 최저임금 고시; 인상률은 가정"
+  },
+  {
+   "item": "주휴·4대보험·퇴직",
+   "value": "주휴 x1.2(PT), 사업주 4대보험 10.7%, 퇴직 8.33%",
+   "type": "E",
+   "source": "근로기준법 제55조; 2026 요율(국민연금 9.5%의 1/2, 건강 7.19%의 1/2, 장기요양 건강보험료의 13.14%, 고용 1.15%, 산재 업종 약 0.7%); 근로자퇴직급여보장법"
+  },
+  {
+   "item": "정규직 급여",
+   "value": "점장 420·헤드베이커 400·베이커 320·바리스타리드 300만원/월",
+   "type": "A",
+   "source": "업계 관행"
+  },
+  {
+   "item": "PT 시간",
+   "value": "주 240 / 280 / 320h (정규 4명 160h 합산 400~480h, 평일 06:30~21시 운영)",
+   "type": "A",
+   "source": "아침 06~11시 비중 24%[D] 대응 오전 피크 배치"
+  },
+  {
+   "item": "임대료",
+   "value": "67,800.0 / 56,500.0 / 48,000.0원/㎡/월(1층), 연 +2%",
+   "type": "E+A",
+   "source": "한국부동산원 상업용부동산 임대동향 2025Q2 서울 중대형 상가 55,400원/㎡(1층)[E] x 1.02(서울 임대가격지수 2026Q1 +0.48%·Q2 +0.46%) = 56,500원 → 역 앞 코너 1.2배 / 서울 평균 / 이면 0.85배[A]. 참고: 2026Q2 전국 중대형 1층 26,700원. 남부터미널·교대 하위상권 수치는 공개 기사에서 미확인 → R-ONE 원자료·현장 시세 검증 필요"
+  },
+  {
+   "item": "보증금",
+   "value": "월세 10개월",
+   "type": "A",
+   "source": "관행, 회수 가능이라 회수기간 계산에서 제외"
+  },
+  {
+   "item": "관리비",
+   "value": "5,000원/㎡/월",
+   "type": "A",
+   "source": "업계 관행"
+  },
+  {
+   "item": "카드수수료",
+   "value": "1.5%",
+   "type": "E+A",
+   "source": "여신금융협회 우대수수료(연매출 10~30억 신용 약 1.25%) + 간편결제 가산"
+  },
+  {
+   "item": "로열티/본사비",
+   "value": "3%",
+   "type": "A",
+   "source": "PE 보유 직영 브랜드 본사 공통비 배부(가맹 로열티 아님)"
+  },
+  {
+   "item": "마케팅·수도광열·소모품·기타",
+   "value": "2% / 4% / 3% / 1%",
+   "type": "A",
+   "source": "업계 관행(오븐 전력, 테이크아웃 포장재)"
+  },
+  {
+   "item": "투자비",
+   "value": "인테리어 평당 330/300/280만원 x 45평 + 설비·집기 1.65억, 권리금 1.2/1.0/0.8억, 개업비 0.3억",
+   "type": "A",
+   "source": "업계 관행; 권리금은 현장 검증 필요"
+  },
+  {
+   "item": "감가상각",
+   "value": "인테리어·설비 정액 5년",
+   "type": "A",
+   "source": "법인세법 기준내용연수 범위 내 가정"
+  }
+ ],
+ "sources_external": [
+  "한국부동산원 2026년 2분기 상업용부동산 임대동향조사(2026-07-30 발표): 전국 중대형 상가 1층 26,700원/㎡, 서울 상가 임대가격지수 +0.46%(전분기 +0.48%) — 뉴시스 2026-07-29 https://www.newsis.com/view/NISX20260729_0003728100",
+  "한국부동산원 2025년 2분기 상업용부동산 임대동향조사: 서울 중대형 상가 55,400원/㎡ — 뉴시스 2025-07-31 https://www.newsis.com/view/NISX20250731_0003273840",
+  "고용노동부 2026년 적용 최저임금 고시 10,320원/시"
+ ]
+}
